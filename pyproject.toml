@@ -1,0 +1,40 @@
+[tool.poetry]
+authors = ["Joris Clement <joclement@posteo.net>"]
+description = "Download amazon product reviews and the reviewers profile information"
+license = "Proprietary"
+name = "amarps"
+readme = "README.md"
+repository = "https://github.com/joclement/amarps"
+version = "0.11.0"
+
+[tool.poetry.dependencies]
+python = ">=3.8.1,<4"
+click= "^8"
+selectorlib = "~0.16"
+selenium = "^4"
+webdriver-manager = "^3"
+selenium-wire = "^5"
+requests = "^2"
+click-log = "^0.4.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7"
+pytest-cov = "^4"
+pytest-httpserver = "^1"
+pytest-random-order = "^1"
+pytest-rerunfailures = "^11"
+pytest-xdist = "^3"
+flake8 = "^6"
+mypy = ">=0.931,<=1.0.1"
+flake8-import-order = "^0.18"
+
+[tool.poetry.scripts]
+arps = "amarps.main:main"
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 94
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,45 @@
+---
+name: Tests
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+jobs:
+  tests:
+    name: ${{ matrix.session }} / ${{ matrix.python-version }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - {session: '', python-version: '3.9', os: ubuntu-latest}
+        - {session: tests, python-version: '3.8', os: ubuntu-latest}
+        - {session: tests, python-version: '3.10', os: ubuntu-latest}
+        - {session: tests, python-version: '3.11', os: ubuntu-latest}
+        - {session: tests, python-version: '3.8', os: macos-latest}
+        - {session: tests, python-version: '3.9', os: macos-latest}
+
+    env:
+      NOXSESSION: ${{ matrix.session }}
+
+    steps:
+    - uses: actions/checkout@v3.3.0
+    - uses: actions/setup-python@v4.5.0
+      with:
+        python-version: ${{ matrix.python-version }}
+    - run: pip install pip==22.3.1
+    - run: pip install nox==2022.11.21
+    - run: pip install poetry==1.3.1
+    - run: pip install nox-poetry==1.0.2
+    - uses: browser-actions/setup-chrome@latest
+      with:
+        chrome-version: stable
+    - uses: browser-actions/setup-firefox@v1
+      with:
+        firefox-version: latest
+    - run: chrome --version
+    - run: nox --python=${{ matrix.python-version }}

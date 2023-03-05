@@ -1,0 +1,42 @@
+---
+profile_influence:
+  css: div.a-section div.deck-container div.desktop div.a-row div.a-section.impact-row div.impact-cell span.impact-text
+  type: Text
+  format: MyInteger
+profile_num_reviews:
+  css: div.a-row div.a-section div.a-section div.impact-cell span.impact-text
+  type: Text
+  format: MyInteger
+profile_image:
+  xpath: /html/body/div[1]/div[2]/div/div/div[3]/div[2]/div/div[1]/div/div/div/img
+  type: Image
+  format: ImageSrcToBool
+profile_reviews:
+  css: div.desktop.card.profile-at-card.profile-at-review-box
+  multiple: true
+  children:
+    body:
+      xpath: div[2]/div[2]/a/div[2]/p/span/span[1]
+      type: Text
+    date:
+      xpath: div[2]/div[1]/div/div/div[2]/span[2]
+      type: Text
+      format: ProfileReviewDate
+    found_helpful:
+      xpath: div[2]/div[2]/p/span
+      type: Text
+      format: FoundHelpful
+    rating:
+      xpath: div[2]/div[2]/a/div[1]/div/i/span
+      type: Text
+      format: ReviewRating
+    review_link:
+      xpath: div[2]/div[2]/div/a
+      type: Link
+    title:
+      xpath: div[2]/div[2]/a/div[2]/h1/span/span[1]/span
+      type: Text
+    verified_purchase:
+      xpath: div[2]/div[2]/a/div[1]/div/span
+      type: Text
+      format: VerifiedPurchase

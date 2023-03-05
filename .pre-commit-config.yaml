@@ -1,0 +1,40 @@
+---
+repos:
+- repo: meta
+  hooks:
+  - id: check-hooks-apply
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: f71fa2c1f9cf5cb705f73dffe4b21f7c61470ba9  # frozen: v4.4.0
+  hooks:
+  - id: check-case-conflict
+  - id: check-toml
+  - id: check-yaml
+  - id: detect-private-key
+  - id: end-of-file-fixer
+    exclude: |
+      (?x)^(
+          tests/data/
+      )
+  - id: mixed-line-ending
+  - id: trailing-whitespace
+    exclude: |
+      (?x)^(
+          tests/data/
+      )
+- repo: https://github.com/pre-commit/pygrep-hooks
+  rev: 3a6eb0fadf60b3cccfd80bad9dbb6fae7e47b316  # frozen: v1.10.0
+  hooks:
+  - id: python-use-type-annotations
+- repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
+  rev: d0cf8a7a8e09127a5a61c0644a823544e32f492b  # frozen: 0.2.2
+  hooks:
+  - id: yamlfmt
+    args: [--mapping, '2', --sequence, '2', --offset, '0']
+- repo: https://github.com/psf/black
+  rev: b0d1fba7ac3be53c71fb0d3211d911e629f8aecb  # frozen: 23.1.0
+  hooks:
+  - id: black
+- repo: https://github.com/commitizen-tools/commitizen
+  rev: 52057ace9f7e1400d560eac76065e257ee3b2213  # frozen: v2.40.0
+  hooks:
+  - id: commitizen

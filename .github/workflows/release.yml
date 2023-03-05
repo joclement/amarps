@@ -1,0 +1,41 @@
+---
+name: Release
+on:
+  push:
+    tags:
+    - v[0-9]+.[0-9]+.[0-9]+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - uses: actions/checkout@v3.3.0
+    - uses: actions/setup-python@v4.5.0
+      with:
+        python-version: '3.9'
+    - run: pip install pip==22.3.1
+    - run: pip install poetry==1.3.1
+    - run: poetry build
+    - name: Store version in environment
+      run: |
+        TAG=${{ github.ref_name }}
+        echo "VERSION=${TAG#v}" >> $GITHUB_ENV
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref_name }}
+        release_name: Release ${{ env.VERSION }}
+        draft: false
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/amarps-${{ env.VERSION }}-py3-none-any.whl
+        asset_name: amarps-${{ env.VERSION }}-py3-none-any.whl
+        asset_content_type: application/x-pywheel+zip
