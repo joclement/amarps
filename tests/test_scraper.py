@@ -176,7 +176,7 @@ def test_get_html_data_client_error(headless_chrome_arr, httpserver_error_404_ur
 
 
 @pytest.mark.e2e
-@pytest.mark.flaky(reruns=2)
+@pytest.mark.flaky(reruns=5)
 def test_get_html_data_succeeds(headless_arr):
     html_page = headless_arr._get_html_data("http://www.example.com")
     assert "This domain is for use in illustrative examples in documents." in html_page
