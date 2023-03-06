@@ -1,3 +1,5 @@
+import os
+
 import nox
 from nox_poetry import Session, session
 
@@ -25,7 +27,7 @@ def tests(session: Session) -> None:
         "pytest-rerunfailures",
         "pytest-xdist",
     )
-    session.run("pytest", *args)
+    session.run("pytest", env={"GITHUB_TOKEN": os.environ["GITHUB_TOKEN"]}, *args)
 
 
 @session(python="3.9")
