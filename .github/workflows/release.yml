@@ -39,3 +39,4 @@ jobs:
         asset_path: ./dist/amarps-${{ env.VERSION }}-py3-none-any.whl
         asset_name: amarps-${{ env.VERSION }}-py3-none-any.whl
         asset_content_type: application/x-pywheel+zip
+    - run: poetry publish --username=__token__ --password=${{ secrets.PYPI_TOKEN }}
