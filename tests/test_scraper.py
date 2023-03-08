@@ -170,7 +170,6 @@ def test_get_html_data_server_error_firefox(
         headless_firefox_arr._get_html_data(httpserver_error_503_url)
 
 
-@pytest.mark.flaky(reruns=3)
 def test_get_html_data_client_error(headless_chrome_arr, httpserver_error_404_url):
     with pytest.raises(ValueError, match="HTTP error: 404"):
         headless_chrome_arr._get_html_data(httpserver_error_404_url)
