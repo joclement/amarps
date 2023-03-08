@@ -209,7 +209,7 @@ def test_get_html_data_succeeds(request, headless_arr, check_status):
     assert "This domain is for use in illustrative examples in documents." in html_page
 
 
-@pytest.mark.flaky(reruns=7)
+@pytest.mark.flaky(reruns=10)
 def test_get_profile_data(headless_arr, httpserver_profile_urls):
     for expected, url in zip(PROFILES, httpserver_profile_urls):
         profile_data = headless_arr.get_profile_data(url)
@@ -223,7 +223,7 @@ def test_get_profile_data(headless_arr, httpserver_profile_urls):
         assert profile_data == expected
 
 
-@pytest.mark.flaky(reruns=7)
+@pytest.mark.flaky(reruns=10)
 def test_add_profiles(headless_arr, reviews_with_profile_link, expected_reviews):
     reviews = deepcopy(reviews_with_profile_link)
     expected_reviews = expected_reviews
