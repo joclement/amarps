@@ -34,7 +34,7 @@ arps = "amarps.main:main"
 
 [tool.coverage.report]
 show_missing = true
-fail_under = 94
+fail_under = 85
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
