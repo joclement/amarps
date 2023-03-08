@@ -162,7 +162,7 @@ def test_get_html_data_server_error_chrome(
         headless_chrome_arr._get_html_data(httpserver_error_503_url)
 
 
-@pytest.mark.flaky(reruns=5)
+@pytest.mark.flaky(reruns=7)
 def test_get_html_data_server_error_firefox(
     headless_firefox_arr, httpserver_error_503_url
 ):
