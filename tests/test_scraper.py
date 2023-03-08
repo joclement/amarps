@@ -306,8 +306,6 @@ def test_format_MyInteger(value, expected):
         ("1234 global ratings", 1234),
         ("1234 globale Bewertungen", 1234),
         ("1234 global", 1234),
-        ("1234", 1234),
-        ("1234 ", 1234),
     ],
 )
 def test_format_NumRatings(value, expected):
@@ -315,7 +313,7 @@ def test_format_NumRatings(value, expected):
     assert formatter.format(value) == expected
 
 
-@pytest.mark.parametrize("value", ["", "1 word", "1 globa"])
+@pytest.mark.parametrize("value", ["", "1234", "123 ", "1 word", "1 globa"])
 def test_format_NumRatings_invalid(value):
     with pytest.raises(ValueError):
         NumRatings().format(value)

@@ -33,24 +33,25 @@ def _convert_date(date: str) -> str:
     raise ValueError(f"Not a suitable date: {date}")
 
 
+def _split(value: str, sep: str, maxsplit: int = 1) -> List[str]:
+    parts = value.split(sep, maxsplit)
+    if len(parts) < 2:
+        raise ValueError(f"Input '{value}' not splittable with separator '{sep}'")
+    return parts
+
+
 class ReviewDate(Formatter):
     def format(self, date: str) -> str:
-        splitted = date.split("on ", 1)
-        if len(splitted) < 2:
-            raise ValueError(f"Not a suitable review date: {date}")
-        return _convert_date(splitted[-1])
+        return _convert_date(_split(date, "on ")[-1])
 
 
 class ProfileReviewDate(Formatter):
     def format(self, date: str) -> str:
-        splitted = date.split(" · ", 1)
-        if len(splitted) < 2:
-            raise ValueError(f"Not a suitable profile review date: {date}")
-        return _convert_date(splitted[-1])
+        return _convert_date(_split(date, " · ")[-1])
 
 
 def _convert_rating(rating: str) -> float:
-    return float(rating.split(" ", 1)[0].replace(",", ".", 1))
+    return float(_split(rating, " ")[0].replace(",", ".", 1))
 
 
 class AverageRating(Formatter):
@@ -77,14 +78,14 @@ class MyInteger(Formatter):
 
 class NumRatings(Formatter):
     def format(self, num_ratings: str) -> int:
-        return _convert_integer(num_ratings.split(" global", 1)[0])
+        return _convert_integer(_split(num_ratings, " global")[0])
 
 
 class FoundHelpful(Formatter):
     def format(self, found_helpful: Optional[str]) -> int:
         if found_helpful is None:
             return 0
-        found_helpful = found_helpful.split(" ", 1)[0]
+        found_helpful = _split(found_helpful, " ")[0]
         if found_helpful.lower() in ["one", "eine"]:
             return 1
         else:
