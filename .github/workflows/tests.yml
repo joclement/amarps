@@ -35,7 +35,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - run: pip install --constraint=.github/constraints.txt pip poetry nox nox-poetry
-    - uses: browser-actions/setup-chrome@latest
+    - uses: browser-actions/setup-chrome@v1
       with:
         chrome-version: stable
     - uses: browser-actions/setup-firefox@v1
