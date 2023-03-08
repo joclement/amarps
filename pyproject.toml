@@ -1,7 +1,7 @@
 [tool.poetry]
 authors = ["Joris Clement <joclement@posteo.net>"]
 description = "Download amazon product reviews and the reviewers profile information"
-license = "Proprietary"
+license = "MIT"
 name = "amarps"
 readme = "README.md"
 repository = "https://github.com/joclement/amarps"
