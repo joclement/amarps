@@ -174,9 +174,20 @@ def test_get_html_data_server_error(
         headless_arr._get_html_data(httpserver_error_503_url)
 
 
-def test_get_html_data_client_error(headless_chrome_arr, httpserver_error_404_url):
+@pytest.mark.parametrize(
+    "headless_arr",
+    [
+        "headless_chrome_arr",
+        pytest.param(
+            "headless_firefox_arr",
+            marks=pytest.mark.xfail(reason="Trouble getting HTTP status"),
+        ),
+    ],
+)
+def test_get_html_data_client_error(request, httpserver_error_404_url, headless_arr):
+    headless_arr = request.getfixturevalue(headless_arr)
     with pytest.raises(ValueError, match="HTTP error: 404"):
-        headless_chrome_arr._get_html_data(httpserver_error_404_url)
+        headless_arr._get_html_data(httpserver_error_404_url)
 
 
 @pytest.mark.e2e
