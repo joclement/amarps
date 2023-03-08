@@ -50,7 +50,7 @@ class ProfileReviewDate(Formatter):
 
 
 def _convert_rating(rating: str) -> float:
-    return float(rating.split(" ")[0].replace(",", ".", 1))
+    return float(rating.split(" ", 1)[0].replace(",", ".", 1))
 
 
 class AverageRating(Formatter):
@@ -67,7 +67,7 @@ class ReviewRating(Formatter):
 
 
 def _convert_integer(number: str) -> int:
-    return int(number.replace(",", "").replace(".", ""))
+    return int(number.replace(",", "", 1).replace(".", "", 1))
 
 
 class MyInteger(Formatter):
@@ -77,14 +77,14 @@ class MyInteger(Formatter):
 
 class NumRatings(Formatter):
     def format(self, num_ratings: str) -> int:
-        return _convert_integer(num_ratings.split(" global")[0])
+        return _convert_integer(num_ratings.split(" global", 1)[0])
 
 
 class FoundHelpful(Formatter):
     def format(self, found_helpful: Optional[str]) -> int:
         if found_helpful is None:
             return 0
-        found_helpful = found_helpful.split(" ")[0]
+        found_helpful = found_helpful.split(" ", 1)[0]
         if found_helpful.lower() in ["one", "eine"]:
             return 1
         else:
