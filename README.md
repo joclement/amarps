@@ -14,4 +14,4 @@ other information belonging to the user.
 
 1. Install this tool `pip install amarps`.
 2. Run `python -m amarps --help` to check the usage
-3. Run e.g. `python -m amarps --profile https://www.amazon.com/product-reviews/B07ZPL752N/`
+3. Run e.g. `python -m amarps https://www.amazon.com/product-reviews/B07ZPL752N/`
