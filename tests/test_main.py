@@ -66,10 +66,8 @@ def test_main_download_reviews_profiles_succeeds(browser):
     assert result.exit_code == 0
 
 
-# TODO make test pass again
 @pytest.mark.e2e
 @pytest.mark.no_nox
-@pytest.mark.skip(reason="Fails currently")
 def test_main_download_profile_succeeds(output_json_file):
     runner = click.testing.CliRunner()
     result = runner.invoke(
