@@ -30,7 +30,7 @@ mypy = ">=0.931,<=1.0.1"
 flake8-import-order = "^0.18"
 
 [tool.poetry.scripts]
-arps = "amarps.main:main"
+amarps = "amarps.main:main"
 
 [tool.coverage.report]
 show_missing = true

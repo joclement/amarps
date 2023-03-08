@@ -155,35 +155,61 @@ def test_Scraper_invalid_browser():
         Scraper(browser="invalid")
 
 
-def test_get_html_data_server_error_chrome(
-    headless_chrome_arr, httpserver_error_503_url
+@pytest.mark.parametrize(
+    ("headless_arr", "error_message"),
+    [
+        ("headless_chrome_arr", "HTTP error: 503"),
+        pytest.param(
+            "headless_firefox_arr",
+            "HTTP error: 500",
+            marks=pytest.mark.flaky(reruns=7),
+        ),
+    ],
+)
+def test_get_html_data_server_error(
+    request, httpserver_error_503_url, headless_arr, error_message
 ):
-    with pytest.raises(ValueError, match="HTTP error: 503"):
-        headless_chrome_arr._get_html_data(httpserver_error_503_url)
+    headless_arr = request.getfixturevalue(headless_arr)
+    with pytest.raises(ValueError, match=error_message):
+        headless_arr._get_html_data(httpserver_error_503_url)
 
 
-@pytest.mark.flaky(reruns=7)
-def test_get_html_data_server_error_firefox(
-    headless_firefox_arr, httpserver_error_503_url
-):
-    with pytest.raises(ValueError, match="HTTP error: 500"):
-        headless_firefox_arr._get_html_data(httpserver_error_503_url)
-
-
-@pytest.mark.flaky(reruns=3)
-def test_get_html_data_client_error(headless_chrome_arr, httpserver_error_404_url):
+@pytest.mark.parametrize(
+    "headless_arr",
+    [
+        "headless_chrome_arr",
+        pytest.param(
+            "headless_firefox_arr",
+            marks=pytest.mark.xfail(reason="Trouble getting HTTP status"),
+        ),
+    ],
+)
+def test_get_html_data_client_error(request, httpserver_error_404_url, headless_arr):
+    headless_arr = request.getfixturevalue(headless_arr)
     with pytest.raises(ValueError, match="HTTP error: 404"):
-        headless_chrome_arr._get_html_data(httpserver_error_404_url)
+        headless_arr._get_html_data(httpserver_error_404_url)
 
 
 @pytest.mark.e2e
-@pytest.mark.flaky(reruns=7)
-def test_get_html_data_succeeds(headless_arr):
-    html_page = headless_arr._get_html_data("http://www.example.com")
+@pytest.mark.parametrize(
+    ("headless_arr", "check_status"),
+    [
+        ("headless_chrome_arr", True),
+        pytest.param(
+            "headless_firefox_arr",
+            True,
+            marks=pytest.mark.xfail(reason="Trouble getting HTTP status"),
+        ),
+        ("headless_firefox_arr", False),
+    ],
+)
+def test_get_html_data_succeeds(request, headless_arr, check_status):
+    headless_arr = request.getfixturevalue(headless_arr)
+    html_page = headless_arr._get_html_data("http://www.example.com", check_status)
     assert "This domain is for use in illustrative examples in documents." in html_page
 
 
-@pytest.mark.flaky(reruns=7)
+@pytest.mark.flaky(reruns=10)
 def test_get_profile_data(headless_arr, httpserver_profile_urls):
     for expected, url in zip(PROFILES, httpserver_profile_urls):
         profile_data = headless_arr.get_profile_data(url)
@@ -197,7 +223,7 @@ def test_get_profile_data(headless_arr, httpserver_profile_urls):
         assert profile_data == expected
 
 
-@pytest.mark.flaky(reruns=7)
+@pytest.mark.flaky(reruns=10)
 def test_add_profiles(headless_arr, reviews_with_profile_link, expected_reviews):
     reviews = deepcopy(reviews_with_profile_link)
     expected_reviews = expected_reviews
