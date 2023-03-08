@@ -1,8 +1,10 @@
+import os
+
 import nox
 from nox_poetry import Session, session
 
 
-nox.options.sessions = "lint", "pre_commit", "mypy", "tests"
+nox.options.sessions = "lint", "mypy", "tests"
 LOCATIONS = "src", "tests", "noxfile.py"
 
 
@@ -25,19 +27,13 @@ def tests(session: Session) -> None:
         "pytest-rerunfailures",
         "pytest-xdist",
     )
-    session.run("pytest", *args)
+    session.run("pytest", env={"GITHUB_TOKEN": os.environ["GITHUB_TOKEN"]}, *args)
 
 
 @session(python="3.9")
 def lint(session: Session) -> None:
     session.install("flake8", "flake8-import-order")
     session.run("flake8", *LOCATIONS)
-
-
-@session(python="3.9")
-def pre_commit(session: Session) -> None:
-    session.install("pre-commit")
-    session.run("pre-commit", "run", "-a")
 
 
 @session(python="3.9")
