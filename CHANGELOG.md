@@ -1,3 +1,14 @@
+## 0.13.0 (2023-03-08)
+
+### Feat
+
+- Validate input a bit more strictly
+- Relax parsing global ratings
+
+### Perf
+
+- Only do needed number of splits/replacements
+
 ## v0.12.0 (2023-03-06)
 
 ### Feat
