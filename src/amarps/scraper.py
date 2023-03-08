@@ -174,7 +174,7 @@ class Scraper:
         except AttributeError:
             logger.warning("Failed to get HTTP status code")
 
-    def _get_html_data(self, url: str) -> str:
+    def _get_html_data(self, url: str, check_status: bool = True) -> str:
         logger.info(f"Download {url}")
 
         self._webdriver.get(url)
@@ -184,7 +184,8 @@ class Scraper:
         if self._html_page_writer is not None:
             self._html_page_writer.write(html_page)
 
-        self._validate_http_status()
+        if check_status:
+            self._validate_http_status()
 
         return html_page
 

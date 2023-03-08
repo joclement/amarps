@@ -177,9 +177,21 @@ def test_get_html_data_client_error(headless_chrome_arr, httpserver_error_404_ur
 
 
 @pytest.mark.e2e
-@pytest.mark.flaky(reruns=7)
-def test_get_html_data_succeeds(headless_arr):
-    html_page = headless_arr._get_html_data("http://www.example.com")
+@pytest.mark.parametrize(
+    ("headless_arr", "check_status"),
+    [
+        ("headless_chrome_arr", True),
+        pytest.param(
+            "headless_firefox_arr",
+            True,
+            marks=pytest.mark.xfail(reason="Trouble getting HTTP status"),
+        ),
+        ("headless_firefox_arr", False),
+    ],
+)
+def test_get_html_data_succeeds(request, headless_arr, check_status):
+    headless_arr = request.getfixturevalue(headless_arr)
+    html_page = headless_arr._get_html_data("http://www.example.com", check_status)
     assert "This domain is for use in illustrative examples in documents." in html_page
 
 
