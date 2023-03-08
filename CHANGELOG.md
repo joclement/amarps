@@ -1,3 +1,9 @@
+## 0.13.1 (2023-03-08)
+
+### Fix
+
+- Fix adding changelog to package
+
 ## 0.13.0 (2023-03-08)
 
 ### Feat
