@@ -291,9 +291,9 @@ def test_format_ProfileReviewDate_invalid(review_date):
         ProfileReviewDate().format(review_date)
 
 
-def test_format_MyInteger():
+@pytest.mark.parametrize(
+    "value,expected", [("1", 1), ("11", 11), ("1.111", 1111), ("1,111", 1111)]
+)
+def test_format_MyInteger(value, expected):
     formatter = MyInteger()
-    assert formatter.format("1") == 1
-    assert formatter.format("11") == 11
-    assert formatter.format("1.111") == 1111
-    assert formatter.format("1,111") == 1111
+    assert formatter.format(value) == expected
