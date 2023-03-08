@@ -27,7 +27,7 @@ def tests(session: Session) -> None:
         "pytest-rerunfailures",
         "pytest-xdist",
     )
-    session.run("pytest", env={"GITHUB_TOKEN": os.environ["GITHUB_TOKEN"]}, *args)
+    session.run("pytest", env={"GH_TOKEN": os.environ["GITHUB_TOKEN"]}, *args)
 
 
 @session(python="3.9")
