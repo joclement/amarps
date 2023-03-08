@@ -8,6 +8,7 @@ from amarps.scraper import (
     AverageRating,
     FoundHelpful,
     MyInteger,
+    NumRatings,
     ProfileReviewDate,
     ReviewDate,
     Scraper,
@@ -297,3 +298,24 @@ def test_format_ProfileReviewDate_invalid(review_date):
 def test_format_MyInteger(value, expected):
     formatter = MyInteger()
     assert formatter.format(value) == expected
+
+
+@pytest.mark.parametrize(
+    "value,expected",
+    [
+        ("1234 global ratings", 1234),
+        ("1234 globale Bewertungen", 1234),
+        ("1234 global", 1234),
+        ("1234", 1234),
+        ("1234 ", 1234),
+    ],
+)
+def test_format_NumRatings(value, expected):
+    formatter = NumRatings()
+    assert formatter.format(value) == expected
+
+
+@pytest.mark.parametrize("value", ["", "1 word", "1 globa"])
+def test_format_NumRatings_invalid(value):
+    with pytest.raises(ValueError):
+        NumRatings().format(value)

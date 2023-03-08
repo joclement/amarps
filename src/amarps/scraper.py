@@ -77,7 +77,7 @@ class MyInteger(Formatter):
 
 class NumRatings(Formatter):
     def format(self, num_ratings: str) -> int:
-        return _convert_integer(num_ratings.split(" global ratings")[0])
+        return _convert_integer(num_ratings.split(" global")[0])
 
 
 class FoundHelpful(Formatter):
