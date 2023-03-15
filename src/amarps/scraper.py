@@ -4,6 +4,7 @@ import json
 import logging
 from math import isclose
 import sys
+from time import sleep
 from typing import Any, Dict, Final, List, Optional, Union
 
 from click import File
@@ -149,7 +150,8 @@ class Scraper:
         have_browser_headless: bool = False,
     ):
         self._html_page_writer = html_page_writer
-        self._webdriver = _init_browser_driver(browser, have_browser_headless)
+        self.have_browser_headless = have_browser_headless
+        self._webdriver = _init_browser_driver(browser, self.have_browser_headless)
 
         self._review_extractor = Extractor.from_yaml_string(
             importlib.resources.read_text("amarps", "review_page_selectors.yml"),
@@ -261,6 +263,17 @@ class Scraper:
         stop_page: Optional[int],
     ) -> Dict[str, Any]:
         data = self._get_data(_get_page_url(base_url, start_page))
+
+        if data["reviews"] is None or len(data["reviews"]) == 0:
+            logger.warning("Failed to extract review data")
+            if not self.have_browser_headless:
+                sleep_time = 30
+                logger.warning(
+                    f"The query will be retried in {sleep_time} seconds, "
+                    "please try to solve a CAPTCHA or login if possible"
+                )
+                sleep(sleep_time)
+                data = self._get_data(_get_page_url(base_url, start_page))
 
         data["reviews"] = self._get_reviews(base_url, data, start_page, stop_page)
 
