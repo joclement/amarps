@@ -38,3 +38,5 @@ repos:
   rev: e3c4e024c17fc88690491fa824389b239aaa6428  # frozen: v2.42.1
   hooks:
   - id: commitizen
+  - id: commitizen-branch
+    stages: [push]
