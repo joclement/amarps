@@ -268,10 +268,10 @@ class Scraper:
             logger.warning("Failed to extract review data")
             if not self.have_browser_headless:
                 logger.warning(
-                    "The query will be retried in 60 seconds, "
+                    "The query will be retried in 30 seconds, "
                     "please try to solve a CAPTCHA or login if possible"
                 )
-                sleep(60)
+                sleep(30)
                 data = self._get_data(_get_page_url(base_url, start_page))
 
         data["reviews"] = self._get_reviews(base_url, data, start_page, stop_page)
