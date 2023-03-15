@@ -36,6 +36,14 @@ amarps = "amarps.main:main"
 show_missing = true
 fail_under = 85
 
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.13.1"
+version_files = [
+    "pyproject.toml:^version"
+]
+tag_format = "v$version"
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
