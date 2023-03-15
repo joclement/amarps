@@ -41,6 +41,7 @@ def test_main_download_reviews_succeeds(browser):
             "https://www.amazon.com/product-reviews/B01AMT0EYU/",
         ],
     )
+
     try:
         assert result.exit_code == 0
     except AssertionError:
@@ -67,6 +68,7 @@ def test_main_download_reviews_profiles_succeeds(browser):
             "https://www.amazon.com/product-reviews/B01AMT0EYU/",
         ],
     )
+
     try:
         assert result.exit_code == 0
     except AssertionError:
