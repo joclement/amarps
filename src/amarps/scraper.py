@@ -1,4 +1,3 @@
-from datetime import datetime
 import importlib.resources
 import json
 import logging
@@ -8,6 +7,7 @@ from time import sleep
 from typing import Any, Dict, Final, List, Optional, Union
 
 from click import File
+import dateparser
 import requests
 from selectorlib import Extractor
 from selectorlib.formatter import Formatter
@@ -21,15 +21,11 @@ def _get_page_url(base_url: str, page: int) -> str:
     return base_url + f"ref=cm_cr_arp_d_paging_btm_next_{page}?pageNumber={page}"
 
 
-ALLOWED_TIME_FORMATS: Final = ["%b %d, %Y", "%B %d, %Y"]
-
-
 def _convert_date(date: str) -> str:
-    for time_format in ALLOWED_TIME_FORMATS:
-        try:
-            return datetime.strptime(date, time_format).strftime("%Y/%m/%d")
-        except ValueError:
-            pass
+    try:
+        return dateparser.parse(date).strftime("%Y/%m/%d")
+    except (ValueError, AttributeError):
+        pass
 
     raise ValueError(f"Not a suitable date: {date}")
 
@@ -43,7 +39,7 @@ def _split(value: str, sep: str, maxsplit: int = 1) -> List[str]:
 
 class ReviewDate(Formatter):
     def format(self, date: str) -> str:
-        return _convert_date(_split(date, "on ")[-1])
+        return _convert_date(" ".join(_split(date, " ", 10)[-3:]))
 
 
 class ProfileReviewDate(Formatter):

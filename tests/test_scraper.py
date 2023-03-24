@@ -303,6 +303,17 @@ def test__convert_date(date, expected):
     assert _convert_date(date) == expected
 
 
+@pytest.mark.parametrize(
+    "inputValue,expected",
+    [
+        ("aus den Vereinigten Staaten vom 23. Januar 2023", "2023/01/23"),
+        ("aus den USA 🇺🇸 am 23. Januar 2023", "2023/01/23"),
+    ],
+)
+def test_format_ReviewDate(inputValue, expected):
+    assert ReviewDate().format(inputValue) == expected
+
+
 INVALID_REVIEW_DATES = ["", "No date", "on", "2022/02/22", " - ", " · "]
 
 
