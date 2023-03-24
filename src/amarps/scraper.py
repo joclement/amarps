@@ -193,6 +193,7 @@ class Scraper:
 
     def get_profile_data(self, url: str) -> Dict[str, Any]:
         try:
+            logger.info(f"Download profile {url}")
             profile_data = self._profile_extractor.extract(
                 self._get_html_data(url), base_url=url
             )
