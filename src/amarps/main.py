@@ -10,7 +10,7 @@ from .scraper import logger, Scraper
 
 
 @click.command()
-@click_log.simple_verbosity_option(logger)
+@click_log.simple_verbosity_option(logger, show_default=True)
 @click.version_option(version=__version__)
 @click.argument(
     "link",
