@@ -103,7 +103,7 @@ class VerifiedPurchase(Formatter):
         )
 
 
-class HTTPError(Exception):
+class HttpError(Exception):
     def __init__(self, status_code: int):
         self.status_code = status_code
 
@@ -175,7 +175,7 @@ class Scraper:
         try:
             status = self._webdriver.last_request.response.status_code
             if status >= 400:
-                raise HTTPError(status)
+                raise HttpError(status)
         except AttributeError:
             logger.warning("Failed to get HTTP status code")
 
@@ -217,7 +217,7 @@ class Scraper:
                     profile_data = self.get_profile_data(review["profile_link"])
                     if profile_data["profile_reviews"] is None:
                         profile_data["profile_error"] = "No data could be extracted"
-                except HTTPError as e:
+                except HttpError as e:
                     logger.error(e)
                     profile_data = {"profile_error": str(e)}
                     if e.status_code not in self._IGNORE_PROFILE_HTTP_STATUS_CODES:

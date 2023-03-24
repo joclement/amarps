@@ -7,7 +7,7 @@ from amarps.scraper import (
     _convert_date,
     AverageRating,
     FoundHelpful,
-    HTTPError,
+    HttpError,
     MyInteger,
     NumRatings,
     ProfileReviewDate,
@@ -171,7 +171,7 @@ def test_get_html_data_server_error(
     request, httpserver_error_503_url, headless_arr, error_message
 ):
     headless_arr = request.getfixturevalue(headless_arr)
-    with pytest.raises(HTTPError, match=error_message):
+    with pytest.raises(HttpError, match=error_message):
         headless_arr._get_html_data(httpserver_error_503_url)
 
 
@@ -187,7 +187,7 @@ def test_get_html_data_server_error(
 )
 def test_get_html_data_client_error(request, httpserver_error_404_url, headless_arr):
     headless_arr = request.getfixturevalue(headless_arr)
-    with pytest.raises(HTTPError, match="HTTP error: 404"):
+    with pytest.raises(HttpError, match="HTTP error: 404"):
         headless_arr._get_html_data(httpserver_error_404_url)
 
 
