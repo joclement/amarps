@@ -22,6 +22,7 @@ def _get_page_url(base_url: str, page: int) -> str:
 
 
 def _convert_date(date: str) -> str:
+    logger.debug(date)
     try:
         return dateparser.parse(date).strftime("%Y/%m/%d")
     except (ValueError, AttributeError) as e:
@@ -34,6 +35,7 @@ def _split(value: str, sep: str, maxsplit: int = 1) -> List[str]:
     parts = value.split(sep, maxsplit)
     if len(parts) < 2:
         raise ValueError(f"Input '{value}' not splittable with separator '{sep}'")
+    logger.debug(parts)
     return parts
 
 
@@ -48,6 +50,7 @@ class ProfileReviewDate(Formatter):
 
 
 def _convert_rating(rating: str) -> float:
+    logger.debug(rating)
     return float(_split(rating, " ")[0].replace(",", ".", 1))
 
 
@@ -66,6 +69,7 @@ class ReviewRating(Formatter):
 
 
 def _convert_integer(number: str) -> int:
+    logger.debug(number)
     return int(number.replace(",", "", 1).replace(".", "", 1))
 
 
@@ -81,6 +85,7 @@ class NumRatings(Formatter):
 
 class FoundHelpful(Formatter):
     def format(self, found_helpful: Optional[str]) -> int:
+        logger.debug(found_helpful)
         if found_helpful is None:
             return 0
         found_helpful = _split(found_helpful, " ")[0]
@@ -92,6 +97,7 @@ class FoundHelpful(Formatter):
 
 class VerifiedPurchase(Formatter):
     def format(self, verified_purchase: Optional[str]) -> bool:
+        logger.debug(verified_purchase)
         return (
             verified_purchase is not None and "Verified Purchase" in verified_purchase
         )
