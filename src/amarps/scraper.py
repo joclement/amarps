@@ -24,8 +24,8 @@ def _get_page_url(base_url: str, page: int) -> str:
 def _convert_date(date: str) -> str:
     try:
         return dateparser.parse(date).strftime("%Y/%m/%d")
-    except (ValueError, AttributeError):
-        pass
+    except (ValueError, AttributeError) as e:
+        logger.error(e)
 
     raise ValueError(f"Not a suitable date: {date}")
 
@@ -60,7 +60,8 @@ class ReviewRating(Formatter):
     def format(self, rating: str) -> Optional[int]:
         try:
             return int(_convert_rating(rating))
-        except TypeError:
+        except TypeError as e:
+            logger.error(e)
             return None
 
 
@@ -197,6 +198,7 @@ class Scraper:
             )
             logger.info(json.dumps(profile_data, indent=4))
         except TypeError as e:
+            logger.error(e)
             profile_data["profile_error"] = f"Error: {e}"
 
         return profile_data
