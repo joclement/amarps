@@ -171,7 +171,7 @@ class Scraper:
         if hasattr(self, "_webdriver"):
             self._webdriver.close()
 
-    def _validate_http_status(self) -> None:
+    def _raise_for_status(self) -> None:
         try:
             status = self._webdriver.last_request.response.status_code
             if status >= 400:
@@ -190,7 +190,7 @@ class Scraper:
             self._html_page_writer.write(html_page)
 
         if check_status:
-            self._validate_http_status()
+            self._raise_for_status()
 
         return html_page
 
