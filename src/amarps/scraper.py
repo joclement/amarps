@@ -257,13 +257,13 @@ class Scraper:
         download_profiles: bool,
         start_page: int,
         stop_page: Optional[int],
+        sleep_time: int,
     ) -> Dict[str, Any]:
         data = self._get_data(_get_page_url(base_url, start_page))
 
         if data["reviews"] is None or len(data["reviews"]) == 0:
             logger.warning("Failed to extract review data")
             if not self.have_browser_headless:
-                sleep_time = 30
                 logger.warning(
                     f"The query will be retried in {sleep_time} seconds, "
                     "please try to solve a CAPTCHA or login if possible"
