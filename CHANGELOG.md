@@ -1,3 +1,15 @@
+## v0.14.0 (2023-03-15)
+
+### Feat
+
+- Reduce currently hardcoded sleep time
+- Allow user to login
+
+### Refactor
+
+- Reduce redundancy
+- Pin down buggy behavior
+
 ## 0.13.1 (2023-03-08)
 
 ### Fix
