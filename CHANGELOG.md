@@ -1,3 +1,20 @@
+## v0.15.0 (2023-03-24)
+
+### Feat
+
+- Log input values for most conversion helpers
+- Log url of profile download
+- Log most catched exceptions as errors
+- Make sleep time configurable
+- Be able to split German-like formatted dates
+- Print default option value
+
+### Refactor
+
+- Make mypy happy
+- Improve function name
+- Use more suitable parent exception
+
 ## v0.14.0 (2023-03-15)
 
 ### Feat
