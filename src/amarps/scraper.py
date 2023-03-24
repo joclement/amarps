@@ -1,4 +1,3 @@
-from datetime import datetime
 import importlib.resources
 import json
 import logging
@@ -8,6 +7,7 @@ from time import sleep
 from typing import Any, Dict, Final, List, Optional, Union
 
 from click import File
+import dateparser
 import requests
 from selectorlib import Extractor
 from selectorlib.formatter import Formatter
@@ -21,29 +21,27 @@ def _get_page_url(base_url: str, page: int) -> str:
     return base_url + f"ref=cm_cr_arp_d_paging_btm_next_{page}?pageNumber={page}"
 
 
-ALLOWED_TIME_FORMATS: Final = ["%b %d, %Y", "%B %d, %Y"]
+def _convert_date(value: str) -> str:
+    logger.debug(value)
 
+    date = dateparser.parse(value)
+    if date is None:
+        raise ValueError(f"Not a suitable date: {date}")
 
-def _convert_date(date: str) -> str:
-    for time_format in ALLOWED_TIME_FORMATS:
-        try:
-            return datetime.strptime(date, time_format).strftime("%Y/%m/%d")
-        except ValueError:
-            pass
-
-    raise ValueError(f"Not a suitable date: {date}")
+    return date.strftime("%Y/%m/%d")
 
 
 def _split(value: str, sep: str, maxsplit: int = 1) -> List[str]:
     parts = value.split(sep, maxsplit)
     if len(parts) < 2:
         raise ValueError(f"Input '{value}' not splittable with separator '{sep}'")
+    logger.debug(parts)
     return parts
 
 
 class ReviewDate(Formatter):
     def format(self, date: str) -> str:
-        return _convert_date(_split(date, "on ")[-1])
+        return _convert_date(" ".join(_split(date, " ", 10)[-3:]))
 
 
 class ProfileReviewDate(Formatter):
@@ -52,6 +50,7 @@ class ProfileReviewDate(Formatter):
 
 
 def _convert_rating(rating: str) -> float:
+    logger.debug(rating)
     return float(_split(rating, " ")[0].replace(",", ".", 1))
 
 
@@ -64,11 +63,13 @@ class ReviewRating(Formatter):
     def format(self, rating: str) -> Optional[int]:
         try:
             return int(_convert_rating(rating))
-        except TypeError:
+        except TypeError as e:
+            logger.error(e)
             return None
 
 
 def _convert_integer(number: str) -> int:
+    logger.debug(number)
     return int(number.replace(",", "", 1).replace(".", "", 1))
 
 
@@ -84,6 +85,7 @@ class NumRatings(Formatter):
 
 class FoundHelpful(Formatter):
     def format(self, found_helpful: Optional[str]) -> int:
+        logger.debug(found_helpful)
         if found_helpful is None:
             return 0
         found_helpful = _split(found_helpful, " ")[0]
@@ -95,12 +97,13 @@ class FoundHelpful(Formatter):
 
 class VerifiedPurchase(Formatter):
     def format(self, verified_purchase: Optional[str]) -> bool:
+        logger.debug(verified_purchase)
         return (
             verified_purchase is not None and "Verified Purchase" in verified_purchase
         )
 
 
-class HTTPError(ValueError):
+class HttpError(Exception):
     def __init__(self, status_code: int):
         self.status_code = status_code
 
@@ -168,11 +171,11 @@ class Scraper:
         if hasattr(self, "_webdriver"):
             self._webdriver.close()
 
-    def _validate_http_status(self) -> None:
+    def _raise_for_status(self) -> None:
         try:
             status = self._webdriver.last_request.response.status_code
             if status >= 400:
-                raise HTTPError(status)
+                raise HttpError(status)
         except AttributeError:
             logger.warning("Failed to get HTTP status code")
 
@@ -187,7 +190,7 @@ class Scraper:
             self._html_page_writer.write(html_page)
 
         if check_status:
-            self._validate_http_status()
+            self._raise_for_status()
 
         return html_page
 
@@ -196,11 +199,13 @@ class Scraper:
 
     def get_profile_data(self, url: str) -> Dict[str, Any]:
         try:
+            logger.info(f"Download profile {url}")
             profile_data = self._profile_extractor.extract(
                 self._get_html_data(url), base_url=url
             )
             logger.info(json.dumps(profile_data, indent=4))
         except TypeError as e:
+            logger.error(e)
             profile_data["profile_error"] = f"Error: {e}"
 
         return profile_data
@@ -212,7 +217,7 @@ class Scraper:
                     profile_data = self.get_profile_data(review["profile_link"])
                     if profile_data["profile_reviews"] is None:
                         profile_data["profile_error"] = "No data could be extracted"
-                except HTTPError as e:
+                except HttpError as e:
                     logger.error(e)
                     profile_data = {"profile_error": str(e)}
                     if e.status_code not in self._IGNORE_PROFILE_HTTP_STATUS_CODES:
@@ -261,13 +266,13 @@ class Scraper:
         download_profiles: bool,
         start_page: int,
         stop_page: Optional[int],
+        sleep_time: int,
     ) -> Dict[str, Any]:
         data = self._get_data(_get_page_url(base_url, start_page))
 
         if data["reviews"] is None or len(data["reviews"]) == 0:
             logger.warning("Failed to extract review data")
             if not self.have_browser_headless:
-                sleep_time = 30
                 logger.warning(
                     f"The query will be retried in {sleep_time} seconds, "
                     "please try to solve a CAPTCHA or login if possible"

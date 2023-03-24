@@ -10,7 +10,7 @@ from .scraper import logger, Scraper
 
 
 @click.command()
-@click_log.simple_verbosity_option(logger)
+@click_log.simple_verbosity_option(logger, show_default=True)
 @click.version_option(version=__version__)
 @click.argument(
     "link",
@@ -72,6 +72,13 @@ from .scraper import logger, Scraper
     default=False,
     show_default=True,
 )
+@click.option(
+    "--sleep-time",
+    help="Time to wait for user input when the 1st request fails",
+    type=int,
+    default=60,
+    show_default=True,
+)
 def main(
     link: str,
     profiles: bool,
@@ -82,6 +89,7 @@ def main(
     html_page: click.File,
     browser: str,
     have_browser_headless: bool,
+    sleep_time: int,
 ) -> None:
     """Download amazon product reviews and reviewers profile information
 
@@ -93,6 +101,6 @@ def main(
     if profile_link:
         data = arr.get_profile_data(link)
     else:
-        data = arr.extract(link, profiles, start_page, stop_page)
+        data = arr.extract(link, profiles, start_page, stop_page, sleep_time)
 
     output.write(json.dumps(data))

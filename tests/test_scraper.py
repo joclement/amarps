@@ -7,6 +7,7 @@ from amarps.scraper import (
     _convert_date,
     AverageRating,
     FoundHelpful,
+    HttpError,
     MyInteger,
     NumRatings,
     ProfileReviewDate,
@@ -170,7 +171,7 @@ def test_get_html_data_server_error(
     request, httpserver_error_503_url, headless_arr, error_message
 ):
     headless_arr = request.getfixturevalue(headless_arr)
-    with pytest.raises(ValueError, match=error_message):
+    with pytest.raises(HttpError, match=error_message):
         headless_arr._get_html_data(httpserver_error_503_url)
 
 
@@ -186,7 +187,7 @@ def test_get_html_data_server_error(
 )
 def test_get_html_data_client_error(request, httpserver_error_404_url, headless_arr):
     headless_arr = request.getfixturevalue(headless_arr)
-    with pytest.raises(ValueError, match="HTTP error: 404"):
+    with pytest.raises(HttpError, match="HTTP error: 404"):
         headless_arr._get_html_data(httpserver_error_404_url)
 
 
@@ -301,6 +302,17 @@ def test_format_FoundHelpful_fails(found_helpful):
 )
 def test__convert_date(date, expected):
     assert _convert_date(date) == expected
+
+
+@pytest.mark.parametrize(
+    "inputValue,expected",
+    [
+        ("aus den Vereinigten Staaten vom 23. Januar 2023", "2023/01/23"),
+        ("aus den USA 🇺🇸 am 23. Januar 2023", "2023/01/23"),
+    ],
+)
+def test_format_ReviewDate(inputValue, expected):
+    assert ReviewDate().format(inputValue) == expected
 
 
 INVALID_REVIEW_DATES = ["", "No date", "on", "2022/02/22", " - ", " · "]
