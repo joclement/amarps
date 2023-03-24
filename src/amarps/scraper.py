@@ -21,14 +21,14 @@ def _get_page_url(base_url: str, page: int) -> str:
     return base_url + f"ref=cm_cr_arp_d_paging_btm_next_{page}?pageNumber={page}"
 
 
-def _convert_date(date: str) -> str:
-    logger.debug(date)
-    try:
-        return dateparser.parse(date).strftime("%Y/%m/%d")
-    except (ValueError, AttributeError) as e:
-        logger.error(e)
+def _convert_date(value: str) -> str:
+    logger.debug(value)
 
-    raise ValueError(f"Not a suitable date: {date}")
+    date = dateparser.parse(value)
+    if date is None:
+        raise ValueError(f"Not a suitable date: {date}")
+
+    return date.strftime("%Y/%m/%d")
 
 
 def _split(value: str, sep: str, maxsplit: int = 1) -> List[str]:
