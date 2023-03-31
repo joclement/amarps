@@ -9,6 +9,9 @@ from . import __version__
 from .scraper import logger, Scraper
 
 
+click_log.basic_config(logger)
+
+
 def _get_command_parameter() -> Dict[str, Any]:
     params = click.get_current_context().params
     params["output"] = str(params["output"])
