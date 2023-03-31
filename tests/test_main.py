@@ -94,7 +94,8 @@ def test_main_download_profile_succeeds(output_json_file):
     assert result.exit_code == 0
 
     profile_data = json.loads(output_json_file.read_text())
-    assert len(profile_data) == 4
+    assert len(profile_data) == 5
+    assert type(profile_data["profile_name"]) is str
     assert type(profile_data["profile_influence"]) is int
     assert profile_data["profile_influence"] >= 363
     assert type(profile_data["profile_num_reviews"]) is int

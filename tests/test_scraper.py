@@ -17,8 +17,18 @@ from amarps.scraper import (
 import pytest
 
 PROFILES: Final = [
-    {"profile_influence": 14, "profile_num_reviews": 53, "profile_image": True},
-    {"profile_influence": 404, "profile_num_reviews": 129, "profile_image": False},
+    {
+        "profile_name": "NAME1",
+        "profile_influence": 14,
+        "profile_num_reviews": 53,
+        "profile_image": True,
+    },
+    {
+        "profile_name": "name2",
+        "profile_influence": 404,
+        "profile_num_reviews": 129,
+        "profile_image": False,
+    },
 ]
 
 
@@ -243,6 +253,7 @@ def test_add_profiles_http_error_403(
     headless_chrome_arr._add_profiles(reviews)
 
     assert len(reviews) == 1
+    assert "profile_name" not in reviews[0]
     assert "profile_influence" not in reviews[0]
     assert "profile_num_reviews" not in reviews[0]
     assert "profile_error" in reviews[0]
