@@ -1,3 +1,22 @@
+## v0.16.0 (2023-03-31)
+
+### Feat
+
+- Improve JSON field name
+- Add profile username
+- Store command parameter in JSON output
+- Make integer conversion more correct
+
+### Fix
+
+- Output messages of all log levels
+- Apply robust integer conversion
+
+### Refactor
+
+- Improve testability
+- Improve function name
+
 ## v0.15.0 (2023-03-24)
 
 ### Feat
