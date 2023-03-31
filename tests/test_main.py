@@ -47,7 +47,7 @@ def test_main_download_reviews_succeeds(browser):
     except AssertionError:
         # FIXME improve to avoid this, likely reason for failure: Server prevents access
         assert result.exit_code == 1
-        assert any([type(result.exception) is t for t in [TypeError, TimeoutException]])
+        assert type(result.exception) in [TypeError, TimeoutException]
 
 
 @pytest.mark.e2e
@@ -74,7 +74,7 @@ def test_main_download_reviews_profiles_succeeds(browser):
     except AssertionError:
         # FIXME improve to avoid this, likely reason for failure: Server prevents access
         assert result.exit_code == 1
-        assert any([type(result.exception) is t for t in [TypeError, TimeoutException]])
+        assert type(result.exception) in [TypeError, TimeoutException]
 
 
 @pytest.mark.e2e
