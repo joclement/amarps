@@ -1,12 +1,18 @@
 import json
 import sys
-from typing import Optional
+from typing import Any, Dict, Optional
 
 import click
 import click_log
 
 from . import __version__
 from .scraper import logger, Scraper
+
+
+def _get_command_parameter() -> Dict[str, Any]:
+    params = click.get_current_context().params
+    params["output"] = str(params["output"])
+    return params
 
 
 @click.command()
@@ -102,5 +108,7 @@ def main(
         data = arr.get_profile_data(link)
     else:
         data = arr.extract(link, profiles, start_page, stop_page, sleep_time)
+
+    data["python_command_parameter"] = _get_command_parameter()
 
     output.write(json.dumps(data))
