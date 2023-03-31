@@ -4,7 +4,7 @@
 
 - Improve JSON field name
 - Add profile username
-- Store command parameter in JSON output
+- Store command parameters in JSON output
 - Make integer conversion more correct
 
 ### Fix
