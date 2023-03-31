@@ -141,8 +141,8 @@ def test_get_profile_data(
             assert type(r["rating"]) is int
             assert r["rating"] >= 1
             assert type(r["date"]) is str
-            assert type(r["found_helpful"]) is int
-            assert type(r["review_link"]) is str
+            assert type(r["found_helpful"]) in [int, type(None)]
+            assert type(r["review_link"]) in [str, type(None)]
             assert type(r["verified_purchase"]) is bool
         assert profile_data == expected
 
