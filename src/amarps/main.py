@@ -1,12 +1,21 @@
 import json
 import sys
-from typing import Optional
+from typing import Any, Dict, Optional
 
 import click
 import click_log
 
 from . import __version__
 from .scraper import logger, Scraper
+
+
+click_log.basic_config(logger)
+
+
+def _get_command_parameters() -> Dict[str, Any]:
+    params = click.get_current_context().params
+    params["output"] = str(params["output"])
+    return params
 
 
 @click.command()
@@ -97,10 +106,12 @@ def main(
     Link must be of the form 'https://www.amazon.com/product-reviews/B01AMT0EYU/' and
     must end with a '/'."
     """
+    data = {"python_command_parameters": _get_command_parameters()}
+
     arr = Scraper(html_page, browser, have_browser_headless)
     if profile_link:
-        data = arr.get_profile_data(link)
+        data.update(arr.get_profile_data(link))
     else:
-        data = arr.extract(link, profiles, start_page, stop_page, sleep_time)
+        data.update(arr.extract(link, profiles, start_page, stop_page, sleep_time))
 
     output.write(json.dumps(data))

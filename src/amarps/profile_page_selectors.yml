@@ -1,4 +1,7 @@
 ---
+profile_name:
+  xpath: /html/body/div[1]/div[2]/div/div/div[3]/div[2]/div/div[2]/div[1]/span
+  type: Text
 profile_influence:
   css: div.a-section div.deck-container div.desktop div.a-row div.a-section.impact-row div.impact-cell span.impact-text
   type: Text

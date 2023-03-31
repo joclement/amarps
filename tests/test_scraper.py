@@ -1,7 +1,4 @@
 from copy import deepcopy
-from pathlib import Path
-import re
-from typing import Final
 
 from amarps.scraper import (
     _convert_date,
@@ -16,16 +13,6 @@ from amarps.scraper import (
 )
 import pytest
 
-PROFILES: Final = [
-    {"profile_influence": 14, "profile_num_reviews": 53, "profile_image": True},
-    {"profile_influence": 404, "profile_num_reviews": 129, "profile_image": False},
-]
-
-
-@pytest.fixture()
-def testdata_dir():
-    return Path(Path(__file__).parent, "data")
-
 
 @pytest.fixture()
 def httpserver_error_503_url(httpserver):
@@ -37,82 +24,6 @@ def httpserver_error_503_url(httpserver):
 def httpserver_error_404_url(httpserver):
     httpserver.expect_request("/").respond_with_data("status code 404", 404)
     return httpserver.url_for("/")
-
-
-@pytest.fixture()
-def httpserver_profile_urls(testdata_dir, httpserver):
-    profiles_dir = Path(testdata_dir, "profiles")
-
-    httpserver.expect_request("/profile1").respond_with_data(
-        (profiles_dir / "OeffentlichesProfil1.html").read_text(),
-        content_type="text/html",
-    )
-    profile_img_path = (
-        "/OeffentlichesProfil1_files/amzn1.account(1).AGNYXWZ6MSS3E2CTREXYFDJBKYBQ"
-    )
-    httpserver.expect_request(profile_img_path).respond_with_data(
-        (profiles_dir / profile_img_path[1:]).read_bytes(),
-        content_type="image/jpeg",
-    )
-    httpserver.expect_request(profile_img_path).respond_with_data(
-        (profiles_dir / profile_img_path[1:]).read_bytes(),
-        content_type="image/jpeg",
-    )
-    profile_img_path = (
-        "/OeffentlichesProfil1_files/amzn1.account.AGNYXWZ6MSS3E2CTREXYFDJBKYBQ"
-    )
-    tmp = profile_img_path.split("/")[-1]
-    httpserver.expect_request(re.compile(f".*/{tmp}")).respond_with_data(
-        (profiles_dir / profile_img_path[1:]).read_bytes(),
-        content_type="image/jpeg",
-    )
-
-    httpserver.expect_request("/profile2").respond_with_data(
-        (profiles_dir / "OeffentlichesProfil2.html").read_text(),
-        content_type="text/html",
-    )
-    profile_img_path = (
-        "/OeffentlichesProfil2_files/amzn1.account(1).AHGZZHFMCPMDOEXDXZM2DYZ2TJRQ"
-    )
-    httpserver.expect_request(profile_img_path).respond_with_data(
-        (profiles_dir / profile_img_path[1:]).read_bytes(),
-        content_type="image/jpeg",
-    )
-    profile_img_path = (
-        "/OeffentlichesProfil2_files/amzn1.account.AHGZZHFMCPMDOEXDXZM2DYZ2TJRQ"
-    )
-    tmp = profile_img_path.split("/")[-1]
-    httpserver.expect_request(re.compile(f".*/{tmp}")).respond_with_data(
-        (profiles_dir / profile_img_path[1:]).read_bytes(),
-        content_type="image/jpeg",
-    )
-
-    def prepare(pattern: str, content_type: str, is_binary: bool) -> None:
-        for file in profiles_dir.glob(pattern):
-            httpserver.expect_request(
-                f"/{file.relative_to(profiles_dir)}"
-            ).respond_with_data(
-                file.read_bytes() if is_binary else file.read_text(),
-                content_type=content_type,
-            )
-
-    prepare(r"*/*\.js$", "application/javascript", False)
-
-    prepare(r"*/*\.jpg$", "image/jpeg", True)
-    prepare(r"*/*\.png$", "image/png", True)
-    prepare(r"*/*\.gif$", "image/gif", True)
-
-    prepare(r"*/*\.css$", "text/css", False)
-
-    prepare(r"Oeff*/*\.html$", "text/html", False)
-
-    prepare(r"*/cm$", "text/plain", False)
-    prepare(r"*/cms$", "text/plain", False)
-    prepare(r"*/saved_resource$", "text/plain", False)
-    prepare(r"*/Serving$", "text/plain", False)
-    prepare(r"*/sync$", "text/plain", False)
-
-    return [httpserver.url_for("/profile1"), httpserver.url_for("/profile2")]
 
 
 @pytest.fixture()
@@ -132,8 +43,11 @@ def reviews_with_profile_link_error_403(httpserver, reviews_with_profile_link):
 
 
 @pytest.fixture()
-def expected_reviews(reviews_with_profile_link):
-    return [{**a, **b} for a, b in zip(reviews_with_profile_link, PROFILES)]
+def expected_reviews(reviews_with_profile_link, httpserver_expected_profiles_data):
+    return [
+        {**a, **b}
+        for a, b in zip(reviews_with_profile_link, httpserver_expected_profiles_data)
+    ]
 
 
 @pytest.fixture()
@@ -157,21 +71,15 @@ def test_Scraper_invalid_browser():
 
 
 @pytest.mark.parametrize(
-    ("headless_arr", "error_message"),
+    "headless_arr",
     [
-        ("headless_chrome_arr", "HTTP error: 503"),
-        pytest.param(
-            "headless_firefox_arr",
-            "HTTP error: 500",
-            marks=pytest.mark.flaky(reruns=7),
-        ),
+        "headless_chrome_arr",
+        pytest.param("headless_firefox_arr", marks=pytest.mark.flaky(reruns=7)),
     ],
 )
-def test_get_html_data_server_error(
-    request, httpserver_error_503_url, headless_arr, error_message
-):
+def test_get_html_data_server_error(request, httpserver_error_503_url, headless_arr):
     headless_arr = request.getfixturevalue(headless_arr)
-    with pytest.raises(HttpError, match=error_message):
+    with pytest.raises(HttpError, match="HTTP error: 50[0|3]"):
         headless_arr._get_html_data(httpserver_error_503_url)
 
 
@@ -211,8 +119,12 @@ def test_get_html_data_succeeds(request, headless_arr, check_status):
 
 
 @pytest.mark.flaky(reruns=10)
-def test_get_profile_data(headless_arr, httpserver_profile_urls):
-    for expected, url in zip(PROFILES, httpserver_profile_urls):
+def test_get_profile_data(
+    headless_arr, httpserver_profile_urls, httpserver_expected_profiles_data
+):
+    for expected, url in zip(
+        httpserver_expected_profiles_data, httpserver_profile_urls
+    ):
         profile_data = headless_arr.get_profile_data(url)
 
         reviews = profile_data.pop("profile_reviews")
@@ -220,7 +132,12 @@ def test_get_profile_data(headless_arr, httpserver_profile_urls):
         for r in reviews:
             assert len(r["title"]) >= 0
             assert len(r["body"]) >= 0
+            assert type(r["rating"]) is int
             assert r["rating"] >= 1
+            assert type(r["date"]) is str
+            assert type(r["found_helpful"]) in [int, type(None)]
+            assert type(r["review_link"]) in [str, type(None)]
+            assert type(r["verified_purchase"]) is bool
         assert profile_data == expected
 
 
@@ -243,6 +160,7 @@ def test_add_profiles_http_error_403(
     headless_chrome_arr._add_profiles(reviews)
 
     assert len(reviews) == 1
+    assert "profile_name" not in reviews[0]
     assert "profile_influence" not in reviews[0]
     assert "profile_num_reviews" not in reviews[0]
     assert "profile_error" in reviews[0]
