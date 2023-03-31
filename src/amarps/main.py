@@ -106,12 +106,12 @@ def main(
     Link must be of the form 'https://www.amazon.com/product-reviews/B01AMT0EYU/' and
     must end with a '/'."
     """
+    data = {"python_command_parameter": _get_command_parameters()}
+
     arr = Scraper(html_page, browser, have_browser_headless)
     if profile_link:
-        data = arr.get_profile_data(link)
+        data.update(arr.get_profile_data(link))
     else:
-        data = arr.extract(link, profiles, start_page, stop_page, sleep_time)
-
-    data["python_command_parameter"] = _get_command_parameters()
+        data.update(arr.extract(link, profiles, start_page, stop_page, sleep_time))
 
     output.write(json.dumps(data))
