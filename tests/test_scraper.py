@@ -230,7 +230,12 @@ def test_get_profile_data(headless_arr, httpserver_profile_urls):
         for r in reviews:
             assert len(r["title"]) >= 0
             assert len(r["body"]) >= 0
+            assert type(r["rating"]) is int
             assert r["rating"] >= 1
+            assert type(r["date"]) is str
+            assert type(r["found_helpful"]) is int
+            assert type(r["review_link"]) is str
+            assert type(r["verified_purchase"]) is bool
         assert profile_data == expected
 
 
