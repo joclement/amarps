@@ -9,7 +9,7 @@ version = "0.16.0"
 include = ["CHANGELOG.md"]
 
 [tool.poetry.dependencies]
-python = ">=3.8.1,<4"
+python = "^3.8"
 click= "^8"
 selectorlib = "~0.16"
 selenium = "^4"
@@ -26,7 +26,7 @@ pytest-httpserver = "^1"
 pytest-random-order = "^1"
 pytest-rerunfailures = "^11"
 pytest-xdist = "^3"
-flake8 = "^6"
+flake8 = {version = "^6", python = ">=3.8.1"}
 mypy = ">=0.931,<=1.1.1"
 flake8-import-order = "^0.18"
 
