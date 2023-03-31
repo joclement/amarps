@@ -68,9 +68,21 @@ class ReviewRating(Formatter):
             return None
 
 
+def _remove_thousand_separator(number: str) -> str:
+    if "," in number:
+        thousand_separator = ","
+    else:
+        thousand_separator = "."
+
+    num_of_allowed_thousand_separators = int((len(number) - 1) / 4)
+    number = number.replace(thousand_separator, "", num_of_allowed_thousand_separators)
+
+    return number
+
+
 def _convert_integer(number: str) -> int:
     logger.debug(number)
-    return int(number.replace(",", "", 1).replace(".", "", 1))
+    return int(_remove_thousand_separator(number))
 
 
 class MyInteger(Formatter):
@@ -92,7 +104,7 @@ class FoundHelpful(Formatter):
         if found_helpful.lower() in ["one", "eine"]:
             return 1
         else:
-            return int(found_helpful)
+            return _convert_integer(found_helpful)
 
 
 class VerifiedPurchase(Formatter):
