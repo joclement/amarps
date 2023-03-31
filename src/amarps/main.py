@@ -12,7 +12,7 @@ from .scraper import logger, Scraper
 click_log.basic_config(logger)
 
 
-def _get_command_parameter() -> Dict[str, Any]:
+def _get_command_parameters() -> Dict[str, Any]:
     params = click.get_current_context().params
     params["output"] = str(params["output"])
     return params
@@ -112,6 +112,6 @@ def main(
     else:
         data = arr.extract(link, profiles, start_page, stop_page, sleep_time)
 
-    data["python_command_parameter"] = _get_command_parameter()
+    data["python_command_parameter"] = _get_command_parameters()
 
     output.write(json.dumps(data))
