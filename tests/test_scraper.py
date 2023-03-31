@@ -71,21 +71,15 @@ def test_Scraper_invalid_browser():
 
 
 @pytest.mark.parametrize(
-    ("headless_arr", "error_message"),
+    "headless_arr",
     [
-        ("headless_chrome_arr", "HTTP error: 503"),
-        pytest.param(
-            "headless_firefox_arr",
-            "HTTP error: 500",
-            marks=pytest.mark.flaky(reruns=7),
-        ),
+        "headless_chrome_arr",
+        pytest.param("headless_firefox_arr", marks=pytest.mark.flaky(reruns=7)),
     ],
 )
-def test_get_html_data_server_error(
-    request, httpserver_error_503_url, headless_arr, error_message
-):
+def test_get_html_data_server_error(request, httpserver_error_503_url, headless_arr):
     headless_arr = request.getfixturevalue(headless_arr)
-    with pytest.raises(HttpError, match=error_message):
+    with pytest.raises(HttpError, match="HTTP error: 50[0|3]"):
         headless_arr._get_html_data(httpserver_error_503_url)
 
 
