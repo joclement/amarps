@@ -105,6 +105,7 @@ def test_main_download_profile_local_succeeds(
         assert result.exit_code == 0
 
         profile_data = json.loads(output_json_file.read_text())
+        del profile_data["python_command_parameters"]
 
         reviews = profile_data.pop("profile_reviews")
         assert len(reviews) == 10
@@ -143,6 +144,7 @@ def test_main_download_profile_e2e_succeeds(output_json_file):
         "profile_num_reviews",
         "profile_image",
         "profile_reviews",
+        "python_command_parameters",
     }
 
     assert type(profile_data["profile_name"]) is str
