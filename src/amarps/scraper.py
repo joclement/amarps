@@ -104,7 +104,7 @@ class FoundHelpful(Formatter):
         if found_helpful.lower() in ["one", "eine"]:
             return 1
         else:
-            return int(found_helpful)
+            return _convert_integer(found_helpful)
 
 
 class VerifiedPurchase(Formatter):

@@ -274,6 +274,7 @@ def test_format_AverageRating_fails(average_rating):
         "2 people found this helpful",
         "2 peoplefound this helpful",
         "3 (ignored humans) found this helpful, this is also ignored",
+        "1,384 people found this helpful",
         "-1 people found this helpful",  # should not happen
         None,
     ],
@@ -289,7 +290,6 @@ def test_format_FoundHelpful_succeeds(found_helpful):
         "oe person found this helpful",
         "2people found this helpful",
         "2.3 people found this helpful",
-        "1,384 people found this helpful",  # FIXME
         "",
     ],
 )
