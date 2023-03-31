@@ -289,6 +289,7 @@ def test_format_FoundHelpful_succeeds(found_helpful):
         "oe person found this helpful",
         "2people found this helpful",
         "2.3 people found this helpful",
+        "1,384 people found this helpful",  # FIXME
         "",
     ],
 )
