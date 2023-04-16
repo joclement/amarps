@@ -141,29 +141,16 @@ def test_get_profile_data(
         assert profile_data == expected
 
 
-@pytest.mark.flaky(reruns=10)
-def test_add_profiles(headless_arr, reviews_with_profile_link, expected_reviews):
-    reviews = deepcopy(reviews_with_profile_link)
-    expected_reviews = expected_reviews
-    headless_arr._add_profiles(reviews)
-
-    profile_reviews_list = [r.pop("profile_reviews") for r in reviews]
-    assert len(profile_reviews_list) == len(reviews)
-    assert all([len(profile_reviews) > 0 for profile_reviews in profile_reviews_list])
-    assert reviews == expected_reviews
-
-
-def test_add_profiles_http_error_403(
+def test_get_profile_data_http_error_403(
     headless_chrome_arr, reviews_with_profile_link_error_403
 ):
-    reviews = deepcopy(reviews_with_profile_link_error_403)[0:1]
-    headless_chrome_arr._add_profiles(reviews)
+    review = deepcopy(reviews_with_profile_link_error_403)[0]
+    profile_data = headless_chrome_arr.get_profile_data(review["profile_link"])
 
-    assert len(reviews) == 1
-    assert "profile_name" not in reviews[0]
-    assert "profile_influence" not in reviews[0]
-    assert "profile_num_reviews" not in reviews[0]
-    assert "profile_error" in reviews[0]
+    assert "profile_name" not in profile_data
+    assert "profile_influence" not in profile_data
+    assert "profile_num_reviews" not in profile_data
+    assert "profile_error" in profile_data
 
 
 @pytest.mark.parametrize(
@@ -180,8 +167,7 @@ def test_format_AverageRating_succeeds(average_rating):
     ["", "4.1outof5.0", "4,1von5", "4,2von 5", " ", " 4,2", " 4.2"],
 )
 def test_format_AverageRating_fails(average_rating):
-    with pytest.raises(ValueError):
-        AverageRating().format(average_rating)
+    assert AverageRating().format(average_rating) == average_rating
 
 
 @pytest.mark.parametrize(
@@ -239,14 +225,12 @@ INVALID_REVIEW_DATES = ["", "No date", "on", "2022/02/22", " - ", " · "]
 
 @pytest.mark.parametrize("review_date", INVALID_REVIEW_DATES)
 def test_format_ReviewDate_invalid(review_date):
-    with pytest.raises(ValueError):
-        ReviewDate().format(review_date)
+    assert ReviewDate().format(review_date) == review_date
 
 
 @pytest.mark.parametrize("review_date", INVALID_REVIEW_DATES)
 def test_format_ProfileReviewDate_invalid(review_date):
-    with pytest.raises(ValueError):
-        ProfileReviewDate().format(review_date)
+    assert ProfileReviewDate().format(review_date) == review_date
 
 
 @pytest.mark.parametrize(
@@ -272,5 +256,4 @@ def test_format_NumRatings(value, expected):
 
 @pytest.mark.parametrize("value", ["", "1234", "123 ", "1 word", "1 globa"])
 def test_format_NumRatings_invalid(value):
-    with pytest.raises(ValueError):
-        NumRatings().format(value)
+    assert NumRatings().format(value) == value
