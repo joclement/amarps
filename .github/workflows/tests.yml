@@ -47,7 +47,6 @@ jobs:
     - uses: browser-actions/setup-firefox@v1
       with:
         firefox-version: latest
-    - run: chrome --version
     - run: nox --python=${{ matrix.python-version }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
