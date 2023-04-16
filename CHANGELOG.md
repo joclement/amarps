@@ -2,7 +2,7 @@
 
 ### Feat
 
-- Download profiless together with reviews
+- Download profiles together with reviews
 - Make formatting optional for certain fields
 
 ## v0.16.0 (2023-03-31)
