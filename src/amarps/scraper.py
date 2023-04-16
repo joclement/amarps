@@ -231,6 +231,7 @@ class Scraper:
         return self._review_extractor.extract(self._get_html_data(url), base_url=url)
 
     def get_profile_data(self, url: str) -> Dict[str, Any]:
+        profile_data = dict()
         try:
             logger.info(f"Download profile {url}")
             profile_data = self._profile_extractor.extract(
@@ -240,24 +241,19 @@ class Scraper:
         except TypeError as e:
             logger.error(e)
             profile_data["profile_error"] = f"Error: {e}"
+        except HttpError as e:
+            logger.error(e)
+            profile_data = {"profile_error": str(e)}
+            if e.status_code not in self._IGNORE_PROFILE_HTTP_STATUS_CODES:
+                raise
+
+        if (
+            "profile_reviews" not in profile_data
+            and "profile_error" not in profile_data
+        ):
+            profile_data["profile_error"] = "No data could be extracted"
 
         return profile_data
-
-    def _add_profiles(self, reviews: List[Dict[str, Any]]) -> None:
-        for review in reviews:
-            if review["profile_link"] is not None:
-                try:
-                    profile_data = self.get_profile_data(review["profile_link"])
-                    if profile_data["profile_reviews"] is None:
-                        profile_data["profile_error"] = "No data could be extracted"
-                except HttpError as e:
-                    logger.error(e)
-                    profile_data = {"profile_error": str(e)}
-                    if e.status_code not in self._IGNORE_PROFILE_HTTP_STATUS_CODES:
-                        raise
-                review.update(profile_data)
-            else:
-                logger.warning("No profile link was extracted")
 
     def _get_reviews(
         self,
@@ -265,6 +261,7 @@ class Scraper:
         data: Dict[str, Any],
         start_page: int,
         stop_page: Optional[int],
+        download_profiles: bool,
     ) -> List[Dict[str, Any]]:
         reviews = []
         page = start_page
@@ -280,6 +277,8 @@ class Scraper:
 
             for r in reviews_data:
                 r["url"] = current_url
+                if download_profiles and r["profile_link"] is not None:
+                    r.update(self.get_profile_data(r["profile_link"]))
                 reviews.append(r)
 
             page += 1
@@ -313,9 +312,8 @@ class Scraper:
                 sleep(sleep_time)
                 data = self._get_data(_get_page_url(base_url, start_page))
 
-        data["reviews"] = self._get_reviews(base_url, data, start_page, stop_page)
-
-        if download_profiles:
-            self._add_profiles(data["reviews"])
+        data["reviews"] = self._get_reviews(
+            base_url, data, start_page, stop_page, download_profiles
+        )
 
         return data
