@@ -4,7 +4,7 @@ import logging
 from math import isclose
 import sys
 from time import sleep
-from typing import Any, Dict, Final, List, Optional, Union
+from typing import Any, Callable, Dict, Final, List, Optional, Union
 
 from click import File
 import dateparser
@@ -39,12 +39,30 @@ def _split(value: str, sep: str, maxsplit: int = 1) -> List[str]:
     return parts
 
 
+def optional(formatFunction: Callable):
+    def formatWhenPossible(self: Formatter, value: str) -> Union[str, float, int]:
+        logger.debug(
+            f"Optionally format value '{value}' with function '{formatFunction}'"
+        )
+        try:
+            return formatFunction(self, value)
+        except Exception as e:
+            logger.error(
+                f"Keep original value, formatting '{value}' led to exception: {e}"
+            )
+            return value
+
+    return formatWhenPossible
+
+
 class ReviewDate(Formatter):
+    @optional
     def format(self, date: str) -> str:
         return _convert_date(" ".join(_split(date, " ", 10)[-3:]))
 
 
 class ProfileReviewDate(Formatter):
+    @optional
     def format(self, date: str) -> str:
         return _convert_date(_split(date, " · ")[-1])
 
@@ -55,6 +73,7 @@ def _convert_rating(rating: str) -> float:
 
 
 class AverageRating(Formatter):
+    @optional
     def format(self, rating: str) -> float:
         return _convert_rating(rating)
 
@@ -86,11 +105,13 @@ def _convert_integer(number: str) -> int:
 
 
 class MyInteger(Formatter):
+    @optional
     def format(self, integer: str) -> int:
         return _convert_integer(integer)
 
 
 class NumRatings(Formatter):
+    @optional
     def format(self, num_ratings: str) -> int:
         return _convert_integer(_split(num_ratings, " global")[0])
 

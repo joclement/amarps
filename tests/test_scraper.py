@@ -180,8 +180,7 @@ def test_format_AverageRating_succeeds(average_rating):
     ["", "4.1outof5.0", "4,1von5", "4,2von 5", " ", " 4,2", " 4.2"],
 )
 def test_format_AverageRating_fails(average_rating):
-    with pytest.raises(ValueError):
-        AverageRating().format(average_rating)
+    assert AverageRating().format(average_rating) == average_rating
 
 
 @pytest.mark.parametrize(
@@ -239,14 +238,12 @@ INVALID_REVIEW_DATES = ["", "No date", "on", "2022/02/22", " - ", " · "]
 
 @pytest.mark.parametrize("review_date", INVALID_REVIEW_DATES)
 def test_format_ReviewDate_invalid(review_date):
-    with pytest.raises(ValueError):
-        ReviewDate().format(review_date)
+    assert ReviewDate().format(review_date) == review_date
 
 
 @pytest.mark.parametrize("review_date", INVALID_REVIEW_DATES)
 def test_format_ProfileReviewDate_invalid(review_date):
-    with pytest.raises(ValueError):
-        ProfileReviewDate().format(review_date)
+    assert ProfileReviewDate().format(review_date) == review_date
 
 
 @pytest.mark.parametrize(
@@ -272,5 +269,4 @@ def test_format_NumRatings(value, expected):
 
 @pytest.mark.parametrize("value", ["", "1234", "123 ", "1 word", "1 globa"])
 def test_format_NumRatings_invalid(value):
-    with pytest.raises(ValueError):
-        NumRatings().format(value)
+    assert NumRatings().format(value) == value
