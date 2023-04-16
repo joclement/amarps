@@ -1,3 +1,10 @@
+## v0.17.0 (2023-04-17)
+
+### Feat
+
+- Download profiless together with reviews
+- Make formatting optional for certain fields
+
 ## v0.16.0 (2023-03-31)
 
 ### Feat
