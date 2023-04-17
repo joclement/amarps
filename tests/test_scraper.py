@@ -74,13 +74,13 @@ def test_Scraper_invalid_browser():
     "headless_arr",
     [
         "headless_chrome_arr",
-        pytest.param("headless_firefox_arr", marks=pytest.mark.flaky(reruns=7)),
+        pytest.param("headless_firefox_arr", marks=pytest.mark.flaky(reruns=10)),
     ],
 )
 def test_get_html_data_server_error(request, httpserver_error_503_url, headless_arr):
     headless_arr = request.getfixturevalue(headless_arr)
     with pytest.raises(HttpError, match="HTTP error: 50[0|3]"):
-        headless_arr._get_html_data(httpserver_error_503_url)
+        headless_arr._get_html_data(httpserver_error_503_url, 0)
 
 
 @pytest.mark.parametrize(
@@ -96,7 +96,7 @@ def test_get_html_data_server_error(request, httpserver_error_503_url, headless_
 def test_get_html_data_client_error(request, httpserver_error_404_url, headless_arr):
     headless_arr = request.getfixturevalue(headless_arr)
     with pytest.raises(HttpError, match="HTTP error: 404"):
-        headless_arr._get_html_data(httpserver_error_404_url)
+        headless_arr._get_html_data(httpserver_error_404_url, 0)
 
 
 @pytest.mark.e2e
@@ -114,7 +114,7 @@ def test_get_html_data_client_error(request, httpserver_error_404_url, headless_
 )
 def test_get_html_data_succeeds(request, headless_arr, check_status):
     headless_arr = request.getfixturevalue(headless_arr)
-    html_page = headless_arr._get_html_data("http://www.example.com", check_status)
+    html_page = headless_arr._get_html_data("http://www.example.com", 0, check_status)
     assert "This domain is for use in illustrative examples in documents." in html_page
 
 

@@ -2,6 +2,7 @@ import importlib.resources
 import json
 import logging
 from math import isclose
+import random
 import sys
 from time import sleep
 from typing import Any, Callable, Dict, Final, List, Optional, Union
@@ -12,6 +13,12 @@ import requests
 from selectorlib import Extractor
 from selectorlib.formatter import Formatter
 from seleniumwire import webdriver
+
+
+BROWSER: Final = "chrome"
+HAVE_BROWSER_HEADLESS: Final = False
+SCROLL_DEPTH_PROFILE_PAGE: Final = 2000
+SCROLL_DEPTH_REVIEWS_PAGE: Final = 2000
 
 
 logger = logging.getLogger(__name__)
@@ -147,6 +154,8 @@ class HttpError(Exception):
 def _init_browser_driver(
     browser: str, have_browser_headless: bool
 ) -> Union[webdriver.Chrome, webdriver.Firefox]:
+    logger.debug(f"Init browser '{browser}'")
+
     if browser == "chrome":
         from selenium.webdriver.chrome.service import Service
         from seleniumwire.webdriver import Chrome as BrowserDriver
@@ -183,11 +192,15 @@ class Scraper:
     def __init__(
         self,
         html_page_writer: Optional[File] = None,
-        browser: str = "chrome",
-        have_browser_headless: bool = False,
+        browser: str = BROWSER,
+        have_browser_headless: bool = HAVE_BROWSER_HEADLESS,
+        scroll_depth_profile_page: int = SCROLL_DEPTH_PROFILE_PAGE,
+        scroll_depth_reviews_page: int = SCROLL_DEPTH_REVIEWS_PAGE,
     ):
         self._html_page_writer = html_page_writer
         self.have_browser_headless = have_browser_headless
+        self.scroll_depth_profile_page = scroll_depth_profile_page
+        self.scroll_depth_reviews_page = scroll_depth_reviews_page
         self._webdriver = _init_browser_driver(browser, self.have_browser_headless)
 
         self._review_extractor = Extractor.from_yaml_string(
@@ -213,11 +226,15 @@ class Scraper:
         except AttributeError:
             logger.warning("Failed to get HTTP status code")
 
-    def _get_html_data(self, url: str, check_status: bool = True) -> str:
+    def _get_html_data(
+        self, url: str, scroll_depth: int, check_status: bool = True
+    ) -> str:
         logger.info(f"Download {url}")
 
         self._webdriver.get(url)
-        self._webdriver.execute_script("window.scrollTo(0,20)")
+        self._webdriver.execute_script(f"window.scrollTo(0,{scroll_depth})")
+
+        sleep(random.random())
 
         html_page = self._webdriver.page_source
         if self._html_page_writer is not None:
@@ -229,14 +246,16 @@ class Scraper:
         return html_page
 
     def _get_data(self, url: str) -> Dict[str, Any]:
-        return self._review_extractor.extract(self._get_html_data(url), base_url=url)
+        return self._review_extractor.extract(
+            self._get_html_data(url, self.scroll_depth_reviews_page), base_url=url
+        )
 
     def get_profile_data(self, url: str) -> Dict[str, Any]:
         profile_data = dict()
         try:
             logger.info(f"Download profile {url}")
             profile_data = self._profile_extractor.extract(
-                self._get_html_data(url), base_url=url
+                self._get_html_data(url, self.scroll_depth_profile_page), base_url=url
             )
             logger.info(json.dumps(profile_data, indent=4))
         except TypeError as e:

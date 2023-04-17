@@ -6,7 +6,14 @@ import click
 import click_log
 
 from . import __version__
-from .scraper import logger, Scraper
+from .scraper import (
+    BROWSER,
+    HAVE_BROWSER_HEADLESS,
+    logger,
+    Scraper,
+    SCROLL_DEPTH_PROFILE_PAGE,
+    SCROLL_DEPTH_REVIEWS_PAGE,
+)
 
 
 click_log.basic_config(logger)
@@ -71,14 +78,14 @@ def _get_command_parameters() -> Dict[str, Any]:
     "-b",
     help="Set which browser should be used",
     type=click.Choice(["chrome", "firefox"]),
-    default="chrome",
+    default=BROWSER,
     show_default=True,
 )
 @click.option(
     "--headless/--no-headless",
     "have_browser_headless",
     help="Run browser in background making it more easily detectable as a web scraper",
-    default=False,
+    default=HAVE_BROWSER_HEADLESS,
     show_default=True,
 )
 @click.option(
@@ -86,6 +93,20 @@ def _get_command_parameters() -> Dict[str, Any]:
     help="Time to wait for user input when the 1st request fails",
     type=int,
     default=60,
+    show_default=True,
+)
+@click.option(
+    "--scroll-depth-profile",
+    help="Scroll depth for the profile pages",
+    type=int,
+    default=SCROLL_DEPTH_PROFILE_PAGE,
+    show_default=True,
+)
+@click.option(
+    "--scroll-depth-reviews",
+    help="Scroll depth for the reviews pages",
+    type=int,
+    default=SCROLL_DEPTH_REVIEWS_PAGE,
     show_default=True,
 )
 def main(
@@ -99,6 +120,8 @@ def main(
     browser: str,
     have_browser_headless: bool,
     sleep_time: int,
+    scroll_depth_profile: int,
+    scroll_depth_reviews: int,
 ) -> None:
     """Download amazon product reviews and reviewers profile information
 
@@ -108,7 +131,13 @@ def main(
     """
     data = {"python_command_parameters": _get_command_parameters()}
 
-    arr = Scraper(html_page, browser, have_browser_headless)
+    arr = Scraper(
+        html_page,
+        browser,
+        have_browser_headless,
+        scroll_depth_profile,
+        scroll_depth_reviews,
+    )
     if profile_link:
         data.update(arr.get_profile_data(link))
     else:
