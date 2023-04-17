@@ -6,7 +6,7 @@ import click
 import click_log
 
 from . import __version__
-from .scraper import logger, Scraper
+from .scraper import BROWSER, HAVE_BROWSER_HEADLESS, logger, Scraper
 
 
 click_log.basic_config(logger)
@@ -71,14 +71,14 @@ def _get_command_parameters() -> Dict[str, Any]:
     "-b",
     help="Set which browser should be used",
     type=click.Choice(["chrome", "firefox"]),
-    default="chrome",
+    default=BROWSER,
     show_default=True,
 )
 @click.option(
     "--headless/--no-headless",
     "have_browser_headless",
     help="Run browser in background making it more easily detectable as a web scraper",
-    default=False,
+    default=HAVE_BROWSER_HEADLESS,
     show_default=True,
 )
 @click.option(

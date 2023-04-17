@@ -14,6 +14,10 @@ from selectorlib.formatter import Formatter
 from seleniumwire import webdriver
 
 
+BROWSER: Final = "chrome"
+HAVE_BROWSER_HEADLESS: Final = False
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -185,8 +189,8 @@ class Scraper:
     def __init__(
         self,
         html_page_writer: Optional[File] = None,
-        browser: str = "chrome",
-        have_browser_headless: bool = False,
+        browser: str = BROWSER,
+        have_browser_headless: bool = HAVE_BROWSER_HEADLESS,
     ):
         self._html_page_writer = html_page_writer
         self.have_browser_headless = have_browser_headless
