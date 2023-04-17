@@ -103,7 +103,7 @@ def main(
     """Download amazon product reviews and reviewers profile information
 
     LINK is an URL to the reviews of an amazon product or to an amazon profile.
-    Link must be of the form 'https://www.amazon.com/product-reviews/B01AMT0EYU/' and
+    Link must be of the form 'https://www.amazon.com/product-reviews/ID123ABC/' and
     must end with a '/'."
     """
     data = {"python_command_parameters": _get_command_parameters()}
