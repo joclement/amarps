@@ -1,3 +1,15 @@
+## v0.18.0 (2023-04-17)
+
+### Feat
+
+- Sleep shortly after scrolling
+- Increase scrolling and make it configurable
+- Add debug log initializing browser
+
+### Refactor
+
+- Reduce redundancy
+
 ## v0.17.0 (2023-04-17)
 
 ### Feat
