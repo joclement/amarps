@@ -5,7 +5,7 @@
 
 # Amazon Review Profile Scraper
 
-A very basic tool to scrape the user reviews of a product on Amazon the profiles that created those reviews.
+A very basic tool to scrape the user reviews of a product on Amazon and the profiles that created those reviews.
 
 It is intended to be used for research to analyze the quality of a user review based on
 other information belonging to the user.
