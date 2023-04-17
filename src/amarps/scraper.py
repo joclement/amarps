@@ -147,6 +147,8 @@ class HttpError(Exception):
 def _init_browser_driver(
     browser: str, have_browser_headless: bool
 ) -> Union[webdriver.Chrome, webdriver.Firefox]:
+    logger.debug(f"Init browser '{browser}'")
+
     if browser == "chrome":
         from selenium.webdriver.chrome.service import Service
         from seleniumwire.webdriver import Chrome as BrowserDriver
