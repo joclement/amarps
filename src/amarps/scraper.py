@@ -2,6 +2,7 @@ import importlib.resources
 import json
 import logging
 from math import isclose
+import random
 import sys
 from time import sleep
 from typing import Any, Callable, Dict, Final, List, Optional, Union
@@ -232,6 +233,8 @@ class Scraper:
 
         self._webdriver.get(url)
         self._webdriver.execute_script(f"window.scrollTo(0,{scroll_depth})")
+
+        sleep(random.random())
 
         html_page = self._webdriver.page_source
         if self._html_page_writer is not None:
