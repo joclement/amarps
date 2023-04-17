@@ -164,6 +164,7 @@ def _init_browser_driver(
     options.set_capability("loggingPrefs", {"performance": "ALL"})
     if have_browser_headless:
         options.add_argument("--headless")
+
     return BrowserDriver(
         options=options,
         service=Service(BrowserDriverManager().install()),
