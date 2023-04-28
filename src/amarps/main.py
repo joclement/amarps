@@ -1,7 +1,7 @@
 import json
 import logging
 import sys
-from typing import Any, Dict, Optional
+from typing import Dict, Optional
 
 import click
 import click_log
@@ -22,10 +22,8 @@ click_log.basic_config(scrapper_logger)
 click_log.basic_config(main_logger)
 
 
-def _get_command_parameters() -> Dict[str, Any]:
-    params = click.get_current_context().params
-    params["output"] = str(params["output"])
-    return params
+def _get_command_parameters() -> Dict[str, str]:
+    return {k: str(v) for k, v in click.get_current_context().params.items()}
 
 
 @click.command()

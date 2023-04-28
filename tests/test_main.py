@@ -122,6 +122,25 @@ def test_main_download_profile_local_succeeds(
 
 
 @pytest.mark.e2e
+def test_main_write_command_options_to_json_succeeds(httpserver_profile_urls):
+    runner = click.testing.CliRunner()
+    result = runner.invoke(
+        main.main,
+        [
+            "--headless",
+            "--html-page",
+            "page.html",
+            "--sleep-time",
+            "3",
+            "--profile-link",
+            httpserver_profile_urls[0],
+        ],
+    )
+
+    assert result.exit_code == 0
+
+
+@pytest.mark.e2e
 @pytest.mark.no_nox
 def test_main_download_profile_e2e_succeeds(output_json_file):
     runner = click.testing.CliRunner()
