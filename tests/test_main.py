@@ -122,7 +122,7 @@ def test_main_download_profile_local_succeeds(
 
 
 @pytest.mark.e2e
-def test_main_write_command_options_to_json_fails(httpserver_profile_urls):  # FIXME
+def test_main_write_command_options_to_json_succeeds(httpserver_profile_urls):
     runner = click.testing.CliRunner()
     result = runner.invoke(
         main.main,
@@ -137,9 +137,7 @@ def test_main_write_command_options_to_json_fails(httpserver_profile_urls):  # F
         ],
     )
 
-    assert result.exit_code == 1
-    assert type(result.exception) is TypeError
-    assert "Object of type LazyFile is not JSON serializable" in str(result.exception)
+    assert result.exit_code == 0
 
 
 @pytest.mark.e2e

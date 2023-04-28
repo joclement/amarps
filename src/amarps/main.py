@@ -23,9 +23,7 @@ click_log.basic_config(main_logger)
 
 
 def _get_command_parameters() -> Dict[str, Any]:
-    params = click.get_current_context().params
-    params["output"] = str(params["output"])
-    return params
+    return {k: str(v) for k, v in click.get_current_context().params.items()}
 
 
 @click.command()
