@@ -1,4 +1,5 @@
 import json
+import logging
 import sys
 from typing import Any, Dict, Optional
 
@@ -9,14 +10,16 @@ from . import __version__
 from .scraper import (
     BROWSER,
     HAVE_BROWSER_HEADLESS,
-    logger,
+    logger as scrapper_logger,
     Scraper,
     SCROLL_DEPTH_PROFILE_PAGE,
     SCROLL_DEPTH_REVIEWS_PAGE,
 )
 
+main_logger = logging.getLogger(__name__)
 
-click_log.basic_config(logger)
+click_log.basic_config(scrapper_logger)
+click_log.basic_config(main_logger)
 
 
 def _get_command_parameters() -> Dict[str, Any]:
@@ -26,7 +29,8 @@ def _get_command_parameters() -> Dict[str, Any]:
 
 
 @click.command()
-@click_log.simple_verbosity_option(logger, show_default=True)
+@click_log.simple_verbosity_option(scrapper_logger, show_default=True)
+@click_log.simple_verbosity_option(main_logger, show_default=True)
 @click.version_option(version=__version__)
 @click.argument(
     "link",
@@ -130,6 +134,7 @@ def main(
     must end with a '/'."
     """
     data = {"python_command_parameters": _get_command_parameters()}
+    main_logger.debug(f"command parameters: {data['python_command_parameters']}")
 
     arr = Scraper(
         html_page,

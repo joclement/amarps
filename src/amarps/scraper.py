@@ -238,9 +238,11 @@ class Scraper:
 
         html_page = self._webdriver.page_source
         if self._html_page_writer is not None:
+            logger.debug("Write HTML page")
             self._html_page_writer.write(html_page)
 
         if check_status:
+            logger.debug("Check HTTP status")
             self._raise_for_status()
 
         return html_page
