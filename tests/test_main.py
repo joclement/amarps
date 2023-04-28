@@ -4,7 +4,6 @@ import re
 from amarps import __version__, main
 import click.testing
 import pytest
-from selenium.common.exceptions import TimeoutException
 
 
 @pytest.fixture
@@ -47,7 +46,7 @@ def test_main_download_reviews_succeeds(browser):
     except AssertionError:
         # FIXME improve to avoid this, likely reason for failure: Server prevents access
         assert result.exit_code == 1
-        assert type(result.exception) in [TypeError, TimeoutException]
+        assert type(result.exception) is RuntimeError
 
 
 @pytest.mark.e2e
@@ -74,7 +73,7 @@ def test_main_download_reviews_profiles_succeeds(browser):
     except AssertionError:
         # FIXME improve to avoid this, likely reason for failure: Server prevents access
         assert result.exit_code == 1
-        assert type(result.exception) in [TypeError, TimeoutException]
+        assert type(result.exception) is RuntimeError
 
 
 @pytest.mark.flaky(reruns=10)
