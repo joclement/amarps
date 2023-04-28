@@ -14,6 +14,8 @@ from selectorlib import Extractor
 from selectorlib.formatter import Formatter
 from seleniumwire import webdriver
 
+from .events import WaitHandler
+
 
 BROWSER: Final = "chrome"
 HAVE_BROWSER_HEADLESS: Final = False
@@ -321,7 +323,7 @@ class Scraper:
         download_profiles: bool,
         start_page: int,
         stop_page: Optional[int],
-        sleep_time: int,
+        wait_time: int,
     ) -> Dict[str, Any]:
         data = self._get_data(_get_page_url(base_url, start_page))
 
@@ -333,10 +335,10 @@ class Scraper:
                 )
 
             logger.warning(
-                f"The query will be retried after {sleep_time} seconds, "
-                "please try to solve a CAPTCHA or login if possible"
+                f"The query will be retried after {wait_time} seconds or when SIGINT "
+                "is signaled, please try to solve a CAPTCHA or login if possible"
             )
-            sleep(sleep_time)
+            WaitHandler().wait(wait_time)
             data = self._get_data(_get_page_url(base_url, start_page))
 
         data["reviews"] = self._get_reviews(
