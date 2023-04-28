@@ -231,6 +231,7 @@ class Scraper:
     ) -> str:
         logger.info(f"Download {url}")
 
+        self._webdriver.delete_all_cookies()
         self._webdriver.get(url)
         self._webdriver.execute_script(f"window.scrollTo(0,{scroll_depth})")
 
