@@ -242,6 +242,7 @@ class Scraper:
             self._html_page_writer.write(html_page)
 
         if check_status:
+            logger.debug("Check HTTP status")
             self._raise_for_status()
 
         return html_page
