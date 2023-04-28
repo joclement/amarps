@@ -325,7 +325,7 @@ class Scraper:
         data = self._get_data(_get_page_url(base_url, start_page))
 
         if data["reviews"] is None or len(data["reviews"]) == 0:
-            logger.error("Failed to extract review data")
+            logger.error("Failed to extract review data on 1st attempt")
             if self.have_browser_headless:
                 raise RuntimeError(
                     "Browser is headless: there is no way to solve a CAPTCHA or login"
