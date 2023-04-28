@@ -332,7 +332,7 @@ class Scraper:
                 )
 
             logger.warning(
-                f"The query will be retried in {sleep_time} seconds, "
+                f"The query will be retried after {sleep_time} seconds, "
                 "please try to solve a CAPTCHA or login if possible"
             )
             sleep(sleep_time)
