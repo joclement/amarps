@@ -120,7 +120,7 @@ def test_main_download_profile_local_succeeds(
         assert profile_data == expected
 
 
-@pytest.mark.e2e
+@pytest.mark.flaky(reruns=1)
 def test_main_write_command_options_to_json_succeeds(httpserver_profile_urls):
     runner = click.testing.CliRunner()
     result = runner.invoke(
