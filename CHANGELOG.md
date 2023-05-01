@@ -13,7 +13,7 @@
 
 ### Fix
 
-- Fix bug
+- Fix bug when using option `--html-page`
 
 ### Refactor
 
