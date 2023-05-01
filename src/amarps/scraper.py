@@ -14,6 +14,8 @@ from selectorlib import Extractor
 from selectorlib.formatter import Formatter
 from seleniumwire import webdriver
 
+from .events import WaitHandler
+
 
 BROWSER: Final = "chrome"
 HAVE_BROWSER_HEADLESS: Final = False
@@ -231,6 +233,7 @@ class Scraper:
     ) -> str:
         logger.info(f"Download {url}")
 
+        self._webdriver.delete_all_cookies()
         self._webdriver.get(url)
         self._webdriver.execute_script(f"window.scrollTo(0,{scroll_depth})")
 
@@ -320,19 +323,23 @@ class Scraper:
         download_profiles: bool,
         start_page: int,
         stop_page: Optional[int],
-        sleep_time: int,
+        wait_time: int,
     ) -> Dict[str, Any]:
         data = self._get_data(_get_page_url(base_url, start_page))
 
         if data["reviews"] is None or len(data["reviews"]) == 0:
-            logger.warning("Failed to extract review data")
-            if not self.have_browser_headless:
-                logger.warning(
-                    f"The query will be retried in {sleep_time} seconds, "
-                    "please try to solve a CAPTCHA or login if possible"
+            logger.error("Failed to extract review data on 1st attempt")
+            if self.have_browser_headless:
+                raise RuntimeError(
+                    "Browser is headless: there is no way to solve a CAPTCHA or login"
                 )
-                sleep(sleep_time)
-                data = self._get_data(_get_page_url(base_url, start_page))
+
+            logger.warning(
+                f"The query will be retried after {wait_time} seconds or when SIGINT "
+                "is signaled, please try to solve a CAPTCHA or login if possible"
+            )
+            WaitHandler().wait(wait_time)
+            data = self._get_data(_get_page_url(base_url, start_page))
 
         data["reviews"] = self._get_reviews(
             base_url, data, start_page, stop_page, download_profiles

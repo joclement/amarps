@@ -92,7 +92,10 @@ def _get_command_parameters() -> Dict[str, str]:
 )
 @click.option(
     "--sleep-time",
-    help="Time to wait for user input when the 1st request fails",
+    help=(
+        "Time to wait for user input when the 1st request fails, "
+        "use SIGINT to interrupt the waiting"
+    ),
     type=int,
     default=60,
     show_default=True,
