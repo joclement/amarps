@@ -1,3 +1,24 @@
+## v0.19.0 (2023-05-01)
+
+### Feat
+
+- Allow to stop waiting with SIGINT
+- Delete all cookies before each request
+- **log**: Improve wording
+- **log**: Improve wording
+- Abort early when error occurs
+- **log**: Log when HTTP status code is checked
+- **log**: Log when html page will be saved
+- Log CLI options and arguments
+
+### Fix
+
+- Fix bug
+
+### Refactor
+
+- Make typing information more specific
+
 ## v0.18.0 (2023-04-17)
 
 ### Feat
