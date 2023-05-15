@@ -35,7 +35,7 @@ repos:
   hooks:
   - id: black
 - repo: https://github.com/commitizen-tools/commitizen
-  rev: cbab456d4c96e0f167b274cf1bd18349e4f049e7  # frozen: 3.2.1
+  rev: 4060cc22d47761e2b5015b5f2d2484c3d65f92a5  # frozen: 3.2.2
   hooks:
   - id: commitizen
   - id: commitizen-branch
