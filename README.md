@@ -7,9 +7,12 @@
 
 ## Description
 
+**NOTE**:
+The Amazon website changes regularly. It is hard to keep up with the
+change. Thus, the tool will most likely no longer work.
+
 A very basic tool to scrape the user reviews of a product on Amazon and the
 profiles that created those reviews.
-
 It is intended to be used for research to analyze the quality of a user review
 based on other information belonging to the user.
 
