@@ -24,11 +24,11 @@ repos:
   - id: yamlfmt
     args: [--mapping, '2', --sequence, '2', --offset, '0']
 - repo: https://github.com/psf/black
-  rev: bf7a16254ec96b084a6caf3d435ec18f0f245cc7  # frozen: 23.3.0
+  rev: 193ee766ca496871f93621d6b58d57a6564ff81b  # frozen: 23.7.0
   hooks:
   - id: black
 - repo: https://github.com/commitizen-tools/commitizen
-  rev: 3ececac37470726e357a3c22c140a0f01cb4ec74  # frozen: 3.3.0
+  rev: 4d36818d87dd24675c70e41d5d9f5f8e814cd17f  # frozen: 3.5.3
   hooks:
   - id: commitizen
   - id: commitizen-branch
