@@ -5,7 +5,7 @@ repos:
   - id: check-hooks-apply
   - id: check-useless-excludes
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: f71fa2c1f9cf5cb705f73dffe4b21f7c61470ba9  # frozen: v4.4.0
+  rev: c4a0b883114b00d8d76b479c820ce7950211c99b  # frozen: v4.5.0
   hooks:
   - id: check-case-conflict
   - id: check-toml
@@ -24,11 +24,11 @@ repos:
   - id: yamlfmt
     args: [--mapping, '2', --sequence, '2', --offset, '0']
 - repo: https://github.com/psf/black
-  rev: 193ee766ca496871f93621d6b58d57a6564ff81b  # frozen: 23.7.0
+  rev: 552baf822992936134cbd31a38f69c8cfe7c0f05  # frozen: 24.3.0
   hooks:
   - id: black
 - repo: https://github.com/commitizen-tools/commitizen
-  rev: 4d36818d87dd24675c70e41d5d9f5f8e814cd17f  # frozen: 3.5.3
+  rev: 91753282436eda42fe95b73eee0c2931b1858f43  # frozen: v3.20.0
   hooks:
   - id: commitizen
   - id: commitizen-branch
